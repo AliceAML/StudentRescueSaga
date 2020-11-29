@@ -45,5 +45,11 @@ public class VueText implements Visible {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void move() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

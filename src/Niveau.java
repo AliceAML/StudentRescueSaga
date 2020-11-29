@@ -6,6 +6,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
+//ajout d'un petit commentaire pour tester
+
 /**
  * Charge les niveaux depuis les fichiers dans une matrice 
  * Contient aussi les phases du jeu au sein d'un niveau ?
