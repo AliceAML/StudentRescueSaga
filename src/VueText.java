@@ -56,7 +56,7 @@ public class VueText implements Visible {
 		//on vient chercher la String de cordonnées lue dans le scanner
 		System.out.println("COORDONNEES : ");
 		String reponse = scanReponse.next();
-		//on stocke les deux indexs correspondants dans un int[][]
+		//on stocke les deux indexs correspondants dans un int[]
 		int[] coord = new int[2];
 		coord[1] = alphabet.indexOf(reponse.charAt(0))+1;
 		coord[0] = Integer.valueOf(reponse.substring(1));
@@ -67,12 +67,12 @@ public class VueText implements Visible {
 			this.move();
 		}
 		//si elle est vide : message d'erreur, on run move() à nouveau
-		if (this.plateau.getCase(coord[0], coord[1]) == null) {
+		else if (this.plateau.getCase(coord[0], coord[1]) == null) {
 			System.out.println("cette case est deja vide");
 			this.move();
 		}
-		//si elle contient une couleur, on la distroy()
-		this.plateau.destroy(coord[0], coord[1]);
+		//si elle contient une couleur, on la destroy()
+		else {this.plateau.destroy(coord[0], coord[1]);}
 	}
 	
 }

@@ -71,7 +71,6 @@ public class Niveau {
 				x = 0; // on réinitialise la largeur
 				row = new Scanner(sc.next());
 			}
-			
 		} catch (FileNotFoundException e) {
 			System.out.println(String.format("Fichier niveau non trouvé (niveau n° %d)",numeroNiveau));
 		} catch (IOException e) {
@@ -79,6 +78,7 @@ public class Niveau {
 		}
 		
 		this.plateau = new Plateau(matriceElements, animauxASauver);
+		
 	}
 
 	public String toString() {
@@ -87,29 +87,40 @@ public class Niveau {
 		return aAfficher;
 	}
 	
-	public static void main(String[] args) {
-		Niveau niveau1 = new Niveau(1);
-		VueText vueNiveau1 = new VueText(niveau1.plateau);
-		vueNiveau1.afficherPlateau();
+	public static void jouer() {
+		//on demande au joueur de selectionner un niveau 
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Choisissez un niveau : ");
+		String n = sc.next();
+		//on crée le niveau et la vuetext correspondante    (il faudra permettre à la méthode de créer une vue normale)
+		Niveau niveau = new Niveau(Integer.valueOf(n));
+		VueText vueNiveau = new VueText(niveau.plateau);
+		
+		//commencement de la partie : 
+		vueNiveau.afficherPlateau();
 		System.out.println("Indiquez les coordonnées à détruire : ('D5' 'C6' 'A1' ?)");
 		//nombre de moves executés
 		int moves = 0;
 		//tant qu'il reste des animaux :
-		while (niveau1.plateau.animauxRestants != 0) {
+		while (niveau.plateau.animauxRestants != 0) {
 			System.out.println();
-			//on choisit une cas à cliquer 
-			vueNiveau1.move();
+			//on choisit une case à cliquer 
+			vueNiveau.move();
 			//on incrémente notre nombre de moves
 			moves++;
 			//on affiche le plateau
-			vueNiveau1.afficherPlateau();
+			vueNiveau.afficherPlateau();
 			//on affiche le nombre d'animaux restants si != 0.
-			if (niveau1.plateau.animauxRestants != 0) {
-				System.out.println(String.format("Il reste %d animaux à sauver !", niveau1.plateau.animauxRestants));
+			if (niveau.plateau.animauxRestants != 0) {
+				System.out.println(String.format("Il reste %d animaux à sauver !", niveau.plateau.animauxRestants));
 			}
 		}
-		
+		//si c'est gagné :
 		System.out.println(String.format("C'est gagné ! Nombre de moves : %d", moves));
+	}
+	
+	public static void main(String[] args) {
+		jouer();
 		
 		
 		
