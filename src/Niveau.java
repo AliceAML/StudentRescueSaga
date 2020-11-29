@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 //ajout d'un petit commentaire pour tester
 // petite réponse pour tester
+//réponse en plus pour retester
 
 /**
  * Charge les niveaux depuis les fichiers dans une matrice 
