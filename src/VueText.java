@@ -1,9 +1,12 @@
+import java.util.Scanner;
 
 public class VueText implements Visible {
 	
 	Plateau plateau;
 	
-	String[] alphabet = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+	String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	
+	private Scanner scanReponse = new Scanner(System.in);
 
 	
 	public VueText(Plateau plateau) {
@@ -15,7 +18,7 @@ public class VueText implements Visible {
 		// ligne d'en-tête : une colonne = une lettre
 		System.out.print("  "); // 2 espaces pour l'affichage des lignes
 		for (int i = 0; i < this.plateau.width; i++) {
-			System.out.print(" " + alphabet[i]);
+			System.out.print(" " + alphabet.charAt(i));
 		}
 		System.out.println();
 		
@@ -43,13 +46,33 @@ public class VueText implements Visible {
 	@Override
 	public void afficherEnv() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
+	
 	public void move() {
-		// TODO Auto-generated method stub
 		
+		//on vient chercher la String de cordonnées lue dans le scanner
+		System.out.println("COORDONNEES : ");
+		String reponse = scanReponse.next();
+		//on stocke les deux indexs correspondants dans un int[][]
+		int[] coord = new int[2];
+		coord[1] = alphabet.indexOf(reponse.charAt(0))+1;
+		coord[0] = Integer.valueOf(reponse.substring(1));
+		//on donne les indexs respectifs en argument à destroy si la case est destroyable.
+		//si elle contient un animal : message d'erreur, on run move() à nouveau
+		if (this.plateau.getCase(coord[0], coord[1]) instanceof Animal) {
+			System.out.println("cette case contient un animal");
+			this.move();
+		}
+		//si elle est vide : message d'erreur, on run move() à nouveau
+		if (this.plateau.getCase(coord[0], coord[1]) == null) {
+			System.out.println("cette case est deja vide");
+			this.move();
+		}
+		//si elle contient une couleur, on la distroy()
+		this.plateau.destroy(coord[0], coord[1]);
 	}
 	
 }

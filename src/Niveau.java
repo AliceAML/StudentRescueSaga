@@ -90,40 +90,63 @@ public class Niveau {
 		Niveau niveau1 = new Niveau(1);
 		VueText vueNiveau1 = new VueText(niveau1.plateau);
 		vueNiveau1.afficherPlateau();
-		System.out.println();
-		System.out.println("Test destroy 6,2");
-		niveau1.plateau.destroy(6, 2);
-		vueNiveau1.afficherPlateau();
-		System.out.println(String.format("Il reste %d animaux à sauver !", niveau1.plateau.animauxRestants));
-		System.out.println();
+		System.out.println("Indiquez les coordonnées à détruire : ('D5' 'C6' 'A1' ?)");
+		//nombre de moves executés
+		int moves = 0;
+		//tant qu'il reste des animaux :
+		while (niveau1.plateau.animauxRestants != 0) {
+			System.out.println();
+			//on choisit une cas à cliquer 
+			vueNiveau1.move();
+			//on incrémente notre nombre de moves
+			moves++;
+			//on affiche le plateau
+			vueNiveau1.afficherPlateau();
+			//on affiche le nombre d'animaux restants si != 0.
+			if (niveau1.plateau.animauxRestants != 0) {
+				System.out.println(String.format("Il reste %d animaux à sauver !", niveau1.plateau.animauxRestants));
+			}
+		}
 		
-		System.out.println("Test destroy 3,4");
-		niveau1.plateau.destroy(3, 4);
-		vueNiveau1.afficherPlateau();
-		System.out.println(String.format("Il reste %d animaux à sauver !", niveau1.plateau.animauxRestants));
-		System.out.println();
+		System.out.println(String.format("C'est gagné ! Nombre de moves : %d", moves));
 		
-		System.out.println("Test destroy 7,3 (test shiftLeft)" );
-		niveau1.plateau.destroy(7, 3);
-		vueNiveau1.afficherPlateau();
-		System.out.println(String.format("Il reste %d animaux à sauver !", niveau1.plateau.animauxRestants));
-
-		System.out.println();
 		
-		System.out.println("Test destroy 6,2 (test animauxSauves)" );
-		niveau1.plateau.destroy(6, 2);
-		vueNiveau1.afficherPlateau();
-		System.out.println(String.format("Il reste %d animaux à sauver !", niveau1.plateau.animauxRestants));
 		
-		System.out.println("Test destroy 6,2" );
-		niveau1.plateau.destroy(6, 2);
-		vueNiveau1.afficherPlateau();
-		System.out.println(String.format("Il reste %d animaux à sauver !", niveau1.plateau.animauxRestants));
 		
-		System.out.println("Test destroy 6,2" );
-		niveau1.plateau.destroy(6, 2);
-		vueNiveau1.afficherPlateau();
-		System.out.println(String.format("Il reste %d animaux à sauver !", niveau1.plateau.animauxRestants));
+//		System.out.println();
+//		System.out.println("Test destroy 6,2");
+//		niveau1.plateau.destroy(6, 2);
+//		vueNiveau1.afficherPlateau();
+//		System.out.println(String.format("Il reste %d animaux à sauver !", niveau1.plateau.animauxRestants));
+//		System.out.println();
+//		
+//		System.out.println("Test destroy 3,4");
+//		niveau1.plateau.destroy(3, 4);
+//		vueNiveau1.afficherPlateau();
+//		System.out.println(String.format("Il reste %d animaux à sauver !", niveau1.plateau.animauxRestants));
+//		System.out.println();
+//		
+//		System.out.println("Test destroy 7,3 (test shiftLeft)" );
+//		niveau1.plateau.destroy(7, 3);
+//		vueNiveau1.afficherPlateau();
+//		System.out.println(String.format("Il reste %d animaux à sauver !", niveau1.plateau.animauxRestants));
+//
+//		System.out.println();
+//		
+//		System.out.println("Test destroy 6,2 (test animauxSauves)" );
+//		niveau1.plateau.destroy(6, 2);
+//		vueNiveau1.afficherPlateau();
+//		System.out.println(String.format("Il reste %d animaux à sauver !", niveau1.plateau.animauxRestants));
+//		
+//		System.out.println("Test destroy 6,2" );
+//		niveau1.plateau.destroy(6, 2);
+//		vueNiveau1.afficherPlateau();
+//		System.out.println(String.format("Il reste %d animaux à sauver !", niveau1.plateau.animauxRestants));
+//		
+//		System.out.println("Test destroy 6,2" );
+//		niveau1.plateau.destroy(6, 2);
+//		vueNiveau1.afficherPlateau();
+//		System.out.println(String.format("Il reste %d animaux à sauver !", niveau1.plateau.animauxRestants));
 	}
 	
 }

@@ -28,6 +28,10 @@ public class Plateau {
 		}
 	}
 	
+	public Element getCase(int x, int y) {
+		return this.matriceElements[x][y];
+	}
+	
 	/**
 	 * Détruit la boite aux coordonnées sélectionnées et tous les boites de la même couleur à côté d'elle
 	 * @param boite
