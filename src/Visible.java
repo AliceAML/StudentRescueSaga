@@ -1,7 +1,6 @@
 /**
  * Interface avec les fonctions nécessaires pour chacun des vues (texte ou graphique)
  * 
- *
  */
 public interface Visible {
 	/** 
@@ -18,4 +17,9 @@ public interface Visible {
 	 * méthode qui affiche l'environnement
 	 */
 	public void afficherEnv();
+	
+	/**
+	 * méthode qui renvoie les coordonnées de la boîte sélectionnée par le joueur
+	 */
+	public void move();
 }
