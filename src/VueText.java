@@ -36,7 +36,7 @@ public class VueText implements Visible {
 
 	@Override
 	public void miseAjourPlateau() {
-		// TODO Auto-generated method stub
+		this.afficherPlateau(); // mise à jour = nouvel affichage
 		
 	}
 
