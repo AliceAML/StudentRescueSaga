@@ -24,6 +24,7 @@ public class Niveau {
 	int numeroNiveau;
 	Plateau plateau;
 	int animauxASauver;  // nombre d'animaux dans ce niveau (ne changera pas)
+	int moves;
 	
 	public Niveau(int numeroNiveau) {		
 		
@@ -71,6 +72,7 @@ public class Niveau {
 				x = 0; // on réinitialise la largeur
 				row = new Scanner(sc.next());
 			}
+			this.moves = this.animauxASauver + y; //la formule est (nombre de blocs explosés au carré) fois 10
 		} catch (FileNotFoundException e) {
 			System.out.println(String.format("Fichier niveau non trouvé (niveau n° %d)",numeroNiveau));
 		} catch (IOException e) {
@@ -112,11 +114,15 @@ public class Niveau {
 			vueNiveau.afficherPlateau();
 			//on affiche le nombre d'animaux restants si != 0.
 			if (niveau.plateau.animauxRestants != 0) {
-				System.out.println(String.format("Il reste %d animaux à sauver !", niveau.plateau.animauxRestants));
+				System.out.println(String.format("Il reste %d animaux à sauver ! %d moves restants. Score : %d",
+						niveau.plateau.animauxRestants,
+						niveau.moves - moves,
+						((moves*moves)*10) + ((niveau.animauxASauver - niveau.plateau.animauxRestants)*500)));
 			}
 		}
 		//si c'est gagné :
-		System.out.println(String.format("C'est gagné ! Nombre de moves : %d", moves));
+		System.out.println(String.format("C'est gagné ! Nombre de moves : %d/%d \nScore : %d", moves, niveau.moves,
+				((moves*moves)*10) + ((niveau.animauxASauver - niveau.plateau.animauxRestants)*500)));
 	}
 	
 	public static void main(String[] args) {
