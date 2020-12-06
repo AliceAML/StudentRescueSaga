@@ -2,14 +2,21 @@ import java.util.Scanner;
 
 public class VueText implements Visible {
 	
-	Plateau plateau;
+	private Plateau plateau;
 	
 	String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	
 	private Scanner scanReponse = new Scanner(System.in);
 
+	public VueText() {
+		this.plateau = null; // la vue n'a pas de plateau à l'initialisation, elle s'ouvre sur l'environnement
+	}
+//	
+//	public VueText(Plateau plateau) {
+//get		this.plateau = plateau;
+//	}
 	
-	public VueText(Plateau plateau) {
+	public void setPlateau(Plateau plateau) {
 		this.plateau = plateau;
 	}
 
@@ -17,7 +24,7 @@ public class VueText implements Visible {
 	public void afficherPlateau() {
 		// ligne d'en-tête : une colonne = une lettre
 		System.out.print("  "); // 2 espaces pour l'affichage des lignes
-		for (int i = 0; i < this.plateau.width; i++) {
+		for (int i = 0; i < this.plateau.getWidth(); i++) {
 			System.out.print(" " + alphabet.charAt(i));
 		}
 		System.out.println();
@@ -33,6 +40,15 @@ public class VueText implements Visible {
 				}
 			}
 			System.out.println();
+		}
+		if (this.plateau.getAnimauxRestants() == 0) {
+			System.out.println(String.format("BRAVO ! Vous avez sauvé tous les animaux.\n Score : %d", this.plateau.getScore()));
+		}
+		else if (this.plateau.isGameOver()) {
+			System.out.println("GAME OVER - aucun move disponible.");
+		}
+		else {
+			System.out.println(String.format("Score : %d -- Animaux à sauver : %d \n", this.plateau.getScore(), this.plateau.getAnimauxRestants()));
 		}
 		
 	}
@@ -54,7 +70,7 @@ public class VueText implements Visible {
 	public void move() {
 		
 		//on vient chercher la String de cordonnées lue dans le scanner
-		System.out.println("COORDONNEES : ");
+		System.out.println("Coordonnées à détruire (A1, C7...) : ");
 		String reponse = scanReponse.next();
 		//on stocke les deux indexs correspondants dans un int[]
 		int[] coord = new int[2];
@@ -71,8 +87,24 @@ public class VueText implements Visible {
 			System.out.println("cette case est deja vide");
 			this.move();
 		}
+		else if (this.plateau.getCase(coord[0], coord[1]) instanceof Obstacle) {
+			System.out.println("On ne peut pas détruire un obstacle.");
+			this.move();
+		}
 		//si elle contient une couleur, on la destroy()
 		else {this.plateau.destroy(coord[0], coord[1]);}
+	}
+
+	@Override
+	public void help() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void welcome() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

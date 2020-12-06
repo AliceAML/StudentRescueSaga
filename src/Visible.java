@@ -22,4 +22,25 @@ public interface Visible {
 	 * méthode qui renvoie les coordonnées de la boîte sélectionnée par le joueur
 	 */
 	public void move();
+	
+	/**
+	 * méthode qui affiche le panneau d'aide avec les règles du jeu et contrôles
+	 */
+	public void help();
+	
+	/**
+	 * Affichage à l'accueil du joueur ??
+	 */
+	public void welcome();
+	
+	/**
+	 * permet de choisir le plateau
+	 * @param plateau
+	 */
+	public void setPlateau(Plateau plateau);
+	
+	/**
+	 * méthode qui permet de quitter un niveau pour se rendre à l'accueil (demander confirmation)
+	 */
+	public void exit();
 }

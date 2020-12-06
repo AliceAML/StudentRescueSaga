@@ -1,3 +1,4 @@
+
 /**
  * 
  * Classe qui contient les réaménagement de plateau 
@@ -5,27 +6,42 @@
  *
  */
 public class Plateau {
-	protected Element[][] matriceElements;
-	int width;
-	int height;
-	int animauxRestants; // nb d'animaux qu'il reste à sauver
+	protected Element[][] matriceElements; // protected car doit pouvoir être modifié par les vues
+	private int width;
+	private int height;
+	private int animauxRestants; // nb d'animaux qu'il reste à sauver
+	private Niveau niveau;
+	private Visible vue;
+	private int score = 0;
+	private int boitesDetruites = 0; // utilisé pour calculer le score dans updateScore
 	
 	
-	public Plateau(Element[][] matriceNiveau, int animauxDuNiveau) {
+	/**
+	 * Constructeur de plateau à partir d'un niveau + une vue
+	 * @param niveau
+	 * @param vue
+	 */
+	public Plateau(Niveau niveau, Visible vue) {
 		
-		this.width = matriceNiveau[0].length;
-		this.height = matriceNiveau.length;
+		this.niveau = niveau;
+		this.width = niveau.getMatrice()[0].length;
+		this.height = niveau.getMatrice().length;
+		this.vue = vue;
 		
-		this.animauxRestants = animauxDuNiveau;
+		this.animauxRestants = niveau.getAnimauxASauver();
 		
 		//création matrice avec "marge" de 2 case tout autour de la matrice de niveau
-		this.matriceElements = new Element[height+2][width + 2];
+		this.matriceElements = new Element[height+2][getWidth() + 2];
 		
 		for (int y = 1; y < this.matriceElements.length-1; y++) {
 			for (int x = 1; x < this.matriceElements[0].length-1; x++) {
-				this.matriceElements[y][x] = matriceNiveau[y-1][x-1];
+				this.matriceElements[y][x] = niveau.getMatrice()[y-1][x-1];
 			}
 		}
+	}
+	
+	public void setVue(Visible vue) {
+		this.vue = vue;
 	}
 	
 	public Element getCase(int x, int y) {
@@ -40,7 +56,7 @@ public class Plateau {
 		if (this.matriceElements[y][x] instanceof Boite) {
 			int valeurBoite = ((Boite) matriceElements[y][x]).getCouleur(); // mémorise valeur dans boîte
 			matriceElements[y][x] = null; // avant de l'effacer
-			
+			this.boitesDetruites++; // on compte la boite détruite
 			int[][] boitesAdja = {{y+1,x},{y-1,x},{y,x+1},{y,x-1}}; // coordonnées des boîtes adjacentes
 			
 			// pour chaque boite de la liste
@@ -61,11 +77,14 @@ public class Plateau {
 	 * réaménage le plateau en faisant descendre les éléments s'il y a du vide en dessous
 	 */
 	public void shiftDown() {
-		for (int x=1; x < this.width+1; x++) { // pour chaque colonne
+		for (int x=1; x < this.getWidth()+1; x++) { // pour chaque colonne
 			for (int y=this.height; y>0; y--) { // pour chaque ligne, à partir de celle tout en bas et en remontant vers le haut
 				if (this.matriceElements[y][x] == null) { // si la case est vide
-					this.matriceElements[y][x] = this.matriceElements[y-1][x]; // on la remplace par celle du dessus
-					this.matriceElements[y-1][x] = null;// et on vide celle du dessus
+					// on la remplace par celle du dessus, sauf si c'est un obstacle
+					if (!(this.matriceElements[y-1][x] instanceof Obstacle)) {
+						this.matriceElements[y][x] = this.matriceElements[y-1][x]; 
+						this.matriceElements[y-1][x] = null;// et on vide celle du dessus
+					}
 				}
 			}
 		}
@@ -77,18 +96,22 @@ public class Plateau {
 	 */
 	public void shiftLeft() {
 		// pour chaque colonne, si elle est vide, on déplace toutes les colonnes d'un rang vers la gauche
-		for (int x=1; x<this.width +1; x++) { // pour chaque colonne
+		for (int x=1; x<this.getWidth() +1; x++) { // pour chaque colonne
 			boolean isEmpty = true; 
 			for (int y=1; y<this.height+1; y++) { // pour chaque case de cette colonne
-				if (this.matriceElements[y][x] != null) { // si la case n'est pas vide
+				if (this.matriceElements[y][x] != null && !(this.matriceElements[y][x+1] instanceof Obstacle)) { 
+					// si la case n'est pas vide et pas un obstacle
 					isEmpty = false; // alors la colonne n'est pas vide
 				}
 			}
 			
 			if (isEmpty) { // si la colonne est vide
 				for (int y=1; y<this.height+1; y++) { // pour chaque case de cette colonne
-					this.matriceElements[y][x] = this.matriceElements[y][x+1];// on la remplace par la case à droite
-					this.matriceElements[y][x+1] = null; // et on vide la case à droite
+					// on la remplace par la case à droite, sauf si c'est un obstacle
+					if (!(this.matriceElements[y][x+1] instanceof Obstacle)) {
+						this.matriceElements[y][x] = this.matriceElements[y][x+1];
+						this.matriceElements[y][x+1] = null; // et on vide la case à droite
+					}
 				}
 			}
 		}
@@ -101,11 +124,97 @@ public class Plateau {
 	 * utilisé à la fin de shiftDown, avant shiftLeft
 	 */
 	public void animauxSauves() {
-		for (int x=1; x<this.width+1; x++) {
+		for (int x=1; x<this.getWidth()+1; x++) {
 			if (this.matriceElements[this.height][x] instanceof Animal) {
 				this.animauxRestants--; // diminue nb d'animaux restants
 				this.matriceElements[this.height][x] = null;
+				this.shiftDown(); // nécessaire au cas où il y a un autre animal sur celui qu'on vient de sauver
 			}
 		}
 	}
+
+	public int getWidth() {
+		return width;
+	}
+	
+	public void jouer() { // TODO il ne faut rien afficher ici, c'est la vue qui doit gérer tout l'affichage
+		//commencement de la partie : 
+		try {
+			this.vue.afficherPlateau();
+		}
+		catch (NullPointerException e) {
+			System.out.println("Il faut set le plateau de la vue.");
+		}
+//		System.out.println("Indiquez les coordonnées à détruire : ('D5' 'C6' 'A1' ?)");
+		//nombre de moves executés
+		int moves = 0;
+		//tant qu'il reste des animaux :
+		while (this.animauxRestants != 0 && !this.isGameOver()) {
+			System.out.println();
+			//on choisit une case à cliquer 
+			this.vue.move();
+			// on met à jour le score après le move
+			//on incrémente notre nombre de moves
+			moves++;
+			this.updateScore();
+			//on affiche le plateau
+			this.vue.afficherPlateau();
+			//on affiche le nombre d'animaux restants si != 0.
+//			if (this.animauxRestants != 0) {
+//				System.out.println(String.format("Il reste %d animaux à sauver ! Score : %d",
+//						this.animauxRestants,
+//						this.score)); // calcul du score
+//			}
+		}
+//		//si c'est gagné :
+//		System.out.println(String.format("C'est gagné ! Nombre de moves : %d/%d \nScore : %d", moves, this.niveau.getMoves(),
+//				this.score));
+	}
+	
+	/**
+	 * Le score vaut le nb de boites détruites au carré x 10
+	 * + 1000 points par animal sauvé
+	 */
+	private void updateScore() {
+		this.score = (this.boitesDetruites*this.boitesDetruites*10) + (this.niveau.getAnimauxASauver() - this.animauxRestants)*1000;
+	}
+	
+	public int getScore() {
+		return score;
+	}
+
+	public int getAnimauxRestants() {
+		return animauxRestants;
+	}
+	
+	/**
+	 * Renvoie true s'il n'y a plus de boites de la même couleur adjacentes, et qu'il reste des animaux à sauver
+	 * @return
+	 */
+	public boolean isGameOver() {
+		if (this.animauxRestants == 0) {
+			return false;
+		}
+		// on parcours tous les éléments
+		for (int y = 1; y < this.matriceElements.length-1; y++) {
+			for (int x = 1; x < this.matriceElements[0].length-1; x++) {
+				if (this.matriceElements[y][x] instanceof Boite) { // si c'est une boîte de couleur
+					int couleurBoite = ((Boite) this.matriceElements[y][x]).getCouleur(); // on stocke la couleur de la boite
+					int[][] boitesAdja = {{y+1,x},{y-1,x},{y,x+1},{y,x-1}}; // coordonnées des boîtes adjacentes
+					// on parcourt les boîtes adjacentes, si la couleur est la même on renvoie FALSE (un move est possible)
+					for (int[] coordo : boitesAdja) {
+						if (this.matriceElements[coordo[0]][coordo[1]] instanceof Boite 
+								&& couleurBoite == ((Boite) this.matriceElements[coordo[0]][coordo[1]]).getCouleur()) {
+							return false;
+						}
+					}
+				}
+				
+			}
+		}
+		
+		return true; // sinon on a game over
+	}
+	
+	
 }
