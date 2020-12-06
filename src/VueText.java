@@ -39,8 +39,15 @@ public class VueText implements Visible {
 					System.out.print(" " + plateau.matriceElements[y][x].toString());
 				}
 			}
+			System.out.print("  " + y); // ré-affiche numéro de ligne
 			System.out.println();
 		}
+		// copie de la ligne d'en-tête en dessous : une colonne = une lettre
+		System.out.print("  "); // 2 espaces pour l'affichage des lignes
+		for (int i = 0; i < this.plateau.getWidth(); i++) {
+			System.out.print(" " + alphabet.charAt(i));
+		}
+		System.out.println();
 		if (this.plateau.getAnimauxRestants() == 0) {
 			System.out.println(String.format("BRAVO ! Vous avez sauvé tous les animaux.\n Score : %d", this.plateau.getScore()));
 		}
