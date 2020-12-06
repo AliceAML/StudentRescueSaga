@@ -191,7 +191,7 @@ public class Plateau {
 	 * Renvoie true s'il n'y a plus de boites de la même couleur adjacentes, et qu'il reste des animaux à sauver
 	 * @return
 	 */
-	public boolean isGameOver() {
+	public boolean isGameOver() { // le niveau 0 permet de tester ça facilement
 		if (this.animauxRestants == 0) {
 			return false;
 		}
