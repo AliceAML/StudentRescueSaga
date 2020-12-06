@@ -25,6 +25,7 @@ public interface Visible {
 	
 	/**
 	 * méthode qui affiche le panneau d'aide avec les règles du jeu et contrôles
+	 * ne pas oublier de permettre au joueur de quitter l'aide
 	 */
 	public void help();
 	
