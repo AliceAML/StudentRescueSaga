@@ -137,7 +137,7 @@ public class Plateau {
 		return width;
 	}
 	
-	public void jouer() { // TODO il ne faut rien afficher ici, c'est la vue qui doit gérer tout l'affichage
+	public void jouer() {
 		//commencement de la partie : 
 		try {
 			this.vue.afficherPlateau();

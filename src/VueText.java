@@ -1,3 +1,6 @@
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class VueText implements Visible {
@@ -68,18 +71,24 @@ public class VueText implements Visible {
 
 	@Override
 	public void afficherEnv() {
-		// TODO Auto-generated method stub
+		// TODO définir afficherEnv
 
 	}
 
 	@Override
 	
 	public void move() {
+		// FIXME il faudrait ouvrir le scanner ici ? et le fermer ?...
 		
 		//on vient chercher la String de cordonnées lue dans le scanner
 		System.out.println("Coordonnées à détruire (A1, C7...) : ");
 		String reponse = scanReponse.next();
 		//on stocke les deux indexs correspondants dans un int[]
+		if (reponse.equals("help")) {
+			this.help();
+			this.afficherPlateau();
+			this.move();
+		}
 		int[] coord = new int[2];
 		coord[1] = alphabet.indexOf(reponse.charAt(0))+1;
 		coord[0] = Integer.valueOf(reponse.substring(1));
@@ -104,14 +113,87 @@ public class VueText implements Visible {
 
 	@Override
 	public void help() {
-		// TODO Auto-generated method stub
+		System.out.println("\n  / // / ___   / /   ___ \n" + 
+				" / _  / / -_) / /   / _ \\\n" + 
+				"/_//_/  \\__/ /_/   / .__/\n" + 
+				"                  /_/   ");
+		System.out.println("Il faut détruire les blocs de chiffres pour faire descendre les @"); // TODO compléter l'aide
+		System.out.println("Pour utiliser la fusée qui détruit une colonne, taper \"fusée A\"");
+		System.out.println("Pour utiliser le marteau qui détruit tous les blocs d'un chiffre, taper \"marteau 2\"");
+		System.out.println("\nAppuyer sur entrée pour reprendre le jeu");
+		Scanner sc = new Scanner(System.in);
+		sc.nextLine();
+//		sc.close(); // FIXME si je close ça fait buguer move !
 		
 	}
 
 	@Override
 	public void welcome() {
-		// TODO Auto-generated method stub
+		System.out.println("       __                                   \n" + 
+				"      / /  ____ _ _   __  ____ _            \n" + 
+				" __  / /  / __ `/| | / / / __ `/            \n" + 
+				"/ /_/ /  / /_/ / | |/ / / /_/ /             \n" + 
+				"\\____/__ \\__,_/  |___/  \\__,_/              \n" + 
+				"   / __ \\  ___    _____  _____  __  __  ___ \n" + 
+				"  / /_/ / / _ \\  / ___/ / ___/ / / / / / _ \\\n" + 
+				" / _, _/ /  __/ (__  ) / /__  / /_/ / /  __/\n" + 
+				"/_/_|_|_ \\___/ /____/  \\___/  \\__,_/  \\___/ \n" + 
+				"  / ___/  ____ _   ____ _  ____ _           \n" + 
+				"  \\__ \\  / __ `/  / __ `/ / __ `/           \n" + 
+				" ___/ / / /_/ /  / /_/ / / /_/ /            \n" + 
+				"/____/  \\__,_/   \\__, /  \\__,_/             \n" + 
+				"                /____/                      \n" + 
+				"\n" + 
+				"");
+		System.out.println("Détruisez tous les blocs de chiffres \npour faire tomber les @ en bas du plateau !\n");
 		
+	}
+
+	@Override
+	public void exit() {
+		// TODO définir exit() > renvoie à l'environnement...
+		
+	}
+
+	@Override
+	public boolean getPlateauGameOver() {
+		return this.plateau.isGameOver();
+	}
+	
+	private static void displayLevels() {
+		System.out.println("Niveaux disponibles : ");
+		File levels = new File("./levels/");
+		ArrayList<String> listLevelNames = new ArrayList<String>(); // liste pour stocker noms des niveaux
+		for (File level : levels.listFiles()) {
+			listLevelNames.add(level.getName());
+		}
+		Collections.sort(listLevelNames);
+		for (String level : listLevelNames) {
+			System.out.println(level);
+		}
+	}
+
+	@Override
+	public int choixNiveau() {
+		displayLevels();
+		//on demande au joueur de selectionner un niveau 
+		// ces 3 lignes correspondent à une fonction de la vue "choixNiveau"
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Choisissez un niveau : "); // TODO affichage + interaction à bouger dans vue
+		int n = sc.nextInt();
+//		sc.close(); // FIXME pourquoi ne peut-on pas fermer le scanner ? ça case jouer()
+		return n;
+	}
+
+	@Override
+	public boolean startAgain() {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Réessayer ? (o/n) ");
+		String ans = sc.next();
+		if (ans.equals("o")) { // si o > on renvoie true pour déclencer un redémarrage dans env
+			return true;
+		}
+		return false;
 	}
 	
 }

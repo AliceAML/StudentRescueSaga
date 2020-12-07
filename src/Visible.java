@@ -44,4 +44,24 @@ public interface Visible {
 	 * méthode qui permet de quitter un niveau pour se rendre à l'accueil (demander confirmation)
 	 */
 	public void exit();
+	
+	/**
+	 * renvoie isGameOver du plateau
+	 * @return
+	 */
+	public boolean getPlateauGameOver();
+	
+	/**
+	 * demande le choix du niveau et le renvoie
+	 * @return
+	 */
+	public int choixNiveau();
+	
+	
+	/**
+	 * demande si on veut rejouer
+	 * @return
+	 */
+	public boolean startAgain(); 
+
 }
