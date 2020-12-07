@@ -77,7 +77,7 @@ public class VueText implements Visible {
 
 	@Override
 	
-	public void move() {
+	public void move() throws ArrayIndexOutOfBoundsException {
 		// FIXME il faudrait ouvrir le scanner ici ? et le fermer ?...
 		
 		//on vient chercher la String de cordonnées lue dans le scanner
@@ -89,26 +89,37 @@ public class VueText implements Visible {
 			this.afficherPlateau();
 			this.move();
 		}
+		if (reponse.equals("exit")) {
+			this.exit();
+		}
 		int[] coord = new int[2];
 		coord[1] = alphabet.indexOf(reponse.charAt(0))+1;
 		coord[0] = Integer.valueOf(reponse.substring(1));
-		//on donne les indexs respectifs en argument à destroy si la case est destroyable.
-		//si elle contient un animal : message d'erreur, on run move() à nouveau
-		if (this.plateau.getCase(coord[0], coord[1]) instanceof Animal) {
-			System.out.println("cette case contient un animal");
+
+		try {
+			//on donne les indexs respectifs en argument à destroy si la case est destroyable.
+			//si elle contient un animal : message d'erreur, on run move() à nouveau
+			if (this.plateau.getCase(coord[0], coord[1]) instanceof Animal) {
+				System.out.println("cette case contient un animal");
+				this.move();
+			}
+			//si elle est vide : message d'erreur, on run move() à nouveau
+			else if (this.plateau.getCase(coord[0], coord[1]) == null) {
+				System.out.println("cette case est deja vide");
+				this.move();
+			}
+			else if (this.plateau.getCase(coord[0], coord[1]) instanceof Obstacle) {
+				System.out.println("On ne peut pas détruire un obstacle.");
+				this.move();
+			}
+			//si elle contient une couleur, on la destroy()
+			else {this.plateau.destroy(coord[0], coord[1]);}
+		}
+		catch (ArrayIndexOutOfBoundsException e) { // cas où l'utilisateur choisit une case hors du plateau
+			System.out.println("Cette case n'existe pas.");
 			this.move();
 		}
-		//si elle est vide : message d'erreur, on run move() à nouveau
-		else if (this.plateau.getCase(coord[0], coord[1]) == null) {
-			System.out.println("cette case est deja vide");
-			this.move();
-		}
-		else if (this.plateau.getCase(coord[0], coord[1]) instanceof Obstacle) {
-			System.out.println("On ne peut pas détruire un obstacle.");
-			this.move();
-		}
-		//si elle contient une couleur, on la destroy()
-		else {this.plateau.destroy(coord[0], coord[1]);}
+		
 	}
 
 	@Override
@@ -151,8 +162,7 @@ public class VueText implements Visible {
 
 	@Override
 	public void exit() {
-		// TODO définir exit() > renvoie à l'environnement...
-		
+		this.afficherEnv(); // TODO plutôt this.welcome() ? comment rebooter l'env ?...
 	}
 
 	@Override
@@ -162,7 +172,10 @@ public class VueText implements Visible {
 	
 	private static void displayLevels() {
 		System.out.println("Niveaux disponibles : ");
-		File levels = new File("./levels/");
+		File levels = new File("./levels/"); // FIXME 2 points ou 1 ? pas pareil dans eclipse et dans le terminal !
+		// regarder ici : https://stackoverflow.com/questions/437382/how-do-relative-file-paths-work-in-eclipse
+		// faire en sorte que ça marche aussi sur Windows avec file separator
+		// + utiliser getResourceAsStream
 		ArrayList<String> listLevelNames = new ArrayList<String>(); // liste pour stocker noms des niveaux
 		for (File level : levels.listFiles()) {
 			listLevelNames.add(level.getName());

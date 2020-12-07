@@ -192,6 +192,7 @@ public class Plateau {
 	 * @return
 	 */
 	public boolean isGameOver() { // le niveau 0 permet de tester ça facilement
+		// TODO prendre en compte les coups spéciaux (si une fusée dispo > pas gameOver)
 		if (this.animauxRestants == 0) {
 			return false;
 		}
