@@ -52,7 +52,7 @@ public class Plateau {
 	 * Détruit la boite aux coordonnées sélectionnées et tous les boites de la même couleur à côté d'elle
 	 * @param boite
 	 */
-	public void destroy(int y, int x) {
+	public void destroy(int y, int x) { // FIXME il ne faut pas que ça marche si la boîte n'a pas de voisine de la même couleur !
 		if (this.matriceElements[y][x] instanceof Boite) {
 			int valeurBoite = ((Boite) matriceElements[y][x]).getCouleur(); // mémorise valeur dans boîte
 			matriceElements[y][x] = null; // avant de l'effacer
