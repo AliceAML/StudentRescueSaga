@@ -80,13 +80,15 @@ public class VueText implements Visible {
 	@Override
 	
 	public void move() throws ArrayIndexOutOfBoundsException {
-		//TODO il faudrait qu'on puisse écrire fusee et même les coordonnées de plusieurs façon différentes pour éviter les misspell errors
-		// FIXME il faudrait ouvrir le scanner ici ? et le fermer ?...
+		//TODO il faudrait qu'on puisse écrire fusee, marteau et même les coordonnées de plusieurs façon différentes pour éviter les misspell errors
+		//FIXME il faudrait ouvrir le scanner ici ? et le fermer ?...
+
 		
 		//on vient chercher la String de cordonnées lue dans le scanner
 		System.out.println("Coordonnées à détruire (A1, C7...) : ");
 		String reponse = scanReponse.next();
-		//on stocke les deux indexs correspondants dans un int[]
+		//on stockera les deux indexs correspondants dans un int[]
+		//on regarde d'abord si l'utilisateur veut utiliser des coups spéciaux ou des commandes
 		
 		
 		if (reponse.equals("help")) {
@@ -94,10 +96,10 @@ public class VueText implements Visible {
 			this.afficherPlateau();
 			this.move();
 		}
-		if (reponse.equals("exit")) {
+		else if (reponse.equals("exit")) {
 			this.exit();
 		}
-		if (reponse.equals("fusee")) {
+		else if (reponse.equals("fusee")) {
 			if (this.plateau.getNbFusees() > 0) {
 				String colonne = scanReponse.next();
 				int y = alphabet.indexOf(colonne)+1;
@@ -110,20 +112,22 @@ public class VueText implements Visible {
 			//FIXME le plateau s'affiche une nouvelle fois après le message alors qu'il faudrait juste remettre .move(). 
 		}
 		
-		if (reponse.equals("marteau")) {
+		else if (reponse.equals("marteau")) {
 			if (this.plateau.getNbMarteaux() > 0) {
 				String coordonnées = scanReponse.next();
 				int[] coord = new int[2];
 				coord[1] = alphabet.indexOf(coordonnées.charAt(0))+1;
 				coord[0] = Integer.valueOf(coordonnées.substring(1));
-				this.plateau.destroy(coord[0], coord[1]);
+				this.plateau.marteauDestroy(coord[0], coord[1]);
 			}
 			else {
 				System.out.println("Vous n'avez plus de marteaux...");
 				this.move();
+				//FIXME destroy est appelé sur les coordonnées sans raison apparente du coup le programme affiche l'erreur case isolée
 			}
 		}
-		if(reponse.length() == 2) {
+		//if(reponse.length() == 2) {
+		else {
 			int[] coord = new int[2];
 			coord[1] = alphabet.indexOf(reponse.charAt(0))+1;
 			coord[0] = Integer.valueOf(reponse.substring(1));

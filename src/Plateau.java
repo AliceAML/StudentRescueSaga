@@ -53,6 +53,7 @@ public class Plateau {
 	}
 	
 	public boolean isAlone(int y, int x) { 
+		System.out.println(y + "" + x);
 		//on part avec 0 boites adjacentes
 		int adja = 0;
 		if (this.matriceElements[y][x] instanceof Boite) {
@@ -114,8 +115,10 @@ public class Plateau {
 	//méthode destroy adaptée à marteau qui diminue le nb de marteaux.
 	//un peu inutile pour l'instant mais c'est plus clair comme ça.
 	public void marteauDestroy(int y, int x) {
-		this.destroy(y, x);
-		this.nbMarteaux--;
+		if (this.nbMarteaux > 0) {
+			this.destroy(y, x);
+			this.nbMarteaux--;
+		}
 	}
 	
 	
