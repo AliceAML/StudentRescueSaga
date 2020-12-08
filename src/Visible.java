@@ -49,6 +49,12 @@ public interface Visible {
 	 * renvoie isGameOver du plateau
 	 * @return
 	 */
+	public boolean getPlateauWin();
+	
+	/**
+	 * renvoie isWin du plateau
+	 * @return
+	 */
 	public boolean getPlateauGameOver();
 	
 	/**
@@ -63,5 +69,11 @@ public interface Visible {
 	 * @return
 	 */
 	public boolean startAgain(); 
+	
+	/**
+	 * demande si on veut choisir un niveau ou faire le prochainj
+	 * @return
+	 */
+	public boolean choiceOrNext(); 
 
 }

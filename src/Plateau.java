@@ -14,6 +14,9 @@ public class Plateau {
 	private Visible vue;
 	private int score = 0;
 	private int boitesDetruites = 0; // utilisé pour calculer le score dans updateScore
+	private int nbFusee = 0;
+	private int nbMarteaux = 0;//instancié à 1 mais il faudrait ajouter l'info dans le level puis l'extraire dans le constructeur
+	//TODO donner un nombre de fusée à chaque niveau et l'extraire dans le constructeur
 	
 	
 	/**
@@ -27,8 +30,9 @@ public class Plateau {
 		this.width = niveau.getMatrice()[0].length;
 		this.height = niveau.getMatrice().length;
 		this.vue = vue;
-		
 		this.animauxRestants = niveau.getAnimauxASauver();
+		this.nbFusee = niveau.getNbFusees();
+		this.nbMarteaux = niveau.getNbMarteaux();
 		
 		//création matrice avec "marge" de 2 case tout autour de la matrice de niveau
 		this.matriceElements = new Element[height+2][getWidth() + 2];
@@ -46,6 +50,27 @@ public class Plateau {
 	
 	public Element getCase(int x, int y) {
 		return this.matriceElements[x][y];
+	}
+	
+	public boolean isAlone(int y, int x) { 
+		//on part avec 0 boites adjacentes
+		int adja = 0;
+		if (this.matriceElements[y][x] instanceof Boite) {
+			int valeurBoite = ((Boite) matriceElements[y][x]).getCouleur();
+			int[][] boitesAdja = {{y+1,x},{y-1,x},{y,x+1},{y,x-1}};
+			for (int[] coordo : boitesAdja) {
+				//on parcourt toutes les boites adjacentes.
+				if (this.matriceElements[coordo[0]][coordo[1]] instanceof Boite) { // si c'est une boite
+					if (((Boite) this.matriceElements[coordo[0]][coordo[1]]).getCouleur() == valeurBoite) {
+						//si on en trouve au moins une de la même couleur :
+						//bool devient false, la boite n'est pas seule
+						adja ++;
+					}
+				}
+			}	
+		}		
+		return (adja==0);
+		//return false;
 	}
 	
 	/**
@@ -72,6 +97,27 @@ public class Plateau {
 		this.shiftDown();
 		this.shiftLeft();
 	}
+	
+	public void fuseeDestroy(int y) {
+		if (this.nbFusee > 0) {
+			for (int i = 0; i <= this.height; i++) {
+				if (this.matriceElements[i][y] instanceof Boite) {
+					this.matriceElements[i][y] = null;
+				}
+				this.shiftDown();
+				this.shiftLeft();
+			}
+			this.nbFusee--;
+		}
+	}
+	
+	//méthode destroy adaptée à marteau qui diminue le nb de marteaux.
+	//un peu inutile pour l'instant mais c'est plus clair comme ça.
+	public void marteauDestroy(int y, int x) {
+		this.destroy(y, x);
+		this.nbMarteaux--;
+	}
+	
 	
 	/**
 	 * réaménage le plateau en faisant descendre les éléments s'il y a du vide en dessous
@@ -145,7 +191,6 @@ public class Plateau {
 		catch (NullPointerException e) {
 			System.out.println("Il faut set le plateau de la vue.");
 		}
-//		System.out.println("Indiquez les coordonnées à détruire : ('D5' 'C6' 'A1' ?)");
 		//nombre de moves executés
 		int moves = 0;
 		//tant qu'il reste des animaux :
@@ -158,17 +203,8 @@ public class Plateau {
 			moves++;
 			this.updateScore();
 			//on affiche le plateau
-			this.vue.afficherPlateau();
-			//on affiche le nombre d'animaux restants si != 0.
-//			if (this.animauxRestants != 0) {
-//				System.out.println(String.format("Il reste %d animaux à sauver ! Score : %d",
-//						this.animauxRestants,
-//						this.score)); // calcul du score
-//			}
+			this.vue.afficherPlateau();	
 		}
-//		//si c'est gagné :
-//		System.out.println(String.format("C'est gagné ! Nombre de moves : %d/%d \nScore : %d", moves, this.niveau.getMoves(),
-//				this.score));
 	}
 	
 	/**
@@ -187,13 +223,20 @@ public class Plateau {
 		return animauxRestants;
 	}
 	
+	public int getNbFusees() {
+		return this.nbFusee;
+	}
+	
+	public int getNbMarteaux() {
+		return this.nbMarteaux;
+	}
+	
 	/**
 	 * Renvoie true s'il n'y a plus de boites de la même couleur adjacentes, et qu'il reste des animaux à sauver
 	 * @return
 	 */
 	public boolean isGameOver() { // le niveau 0 permet de tester ça facilement
-		// TODO prendre en compte les coups spéciaux (si une fusée dispo > pas gameOver)
-		if (this.animauxRestants == 0) {
+		if (this.animauxRestants == 0 || this.nbFusee!=0 || this.nbMarteaux!=0) {
 			return false;
 		}
 		// on parcours tous les éléments
@@ -217,5 +260,11 @@ public class Plateau {
 		return true; // sinon on a game over
 	}
 	
+	public boolean isWin() { 
+		if (this.animauxRestants == 0) {
+			return true;
+		}
+		return false;
+	}
 	
 }

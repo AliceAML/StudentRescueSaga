@@ -60,6 +60,8 @@ public class VueText implements Visible {
 		else {
 			System.out.println(String.format("Score : %d -- Animaux à sauver : %d \n", this.plateau.getScore(), this.plateau.getAnimauxRestants()));
 		}
+		System.out.println("Fusées : " + this.plateau.getNbFusees() + " Marteaux : " + this.plateau.getNbMarteaux());
+
 		
 	}
 
@@ -78,12 +80,15 @@ public class VueText implements Visible {
 	@Override
 	
 	public void move() throws ArrayIndexOutOfBoundsException {
+		//TODO il faudrait qu'on puisse écrire fusee et même les coordonnées de plusieurs façon différentes pour éviter les misspell errors
 		// FIXME il faudrait ouvrir le scanner ici ? et le fermer ?...
 		
 		//on vient chercher la String de cordonnées lue dans le scanner
 		System.out.println("Coordonnées à détruire (A1, C7...) : ");
 		String reponse = scanReponse.next();
 		//on stocke les deux indexs correspondants dans un int[]
+		
+		
 		if (reponse.equals("help")) {
 			this.help();
 			this.afficherPlateau();
@@ -92,34 +97,71 @@ public class VueText implements Visible {
 		if (reponse.equals("exit")) {
 			this.exit();
 		}
-		int[] coord = new int[2];
-		coord[1] = alphabet.indexOf(reponse.charAt(0))+1;
-		coord[0] = Integer.valueOf(reponse.substring(1));
-
-		try {
-			//on donne les indexs respectifs en argument à destroy si la case est destroyable.
-			//si elle contient un animal : message d'erreur, on run move() à nouveau
-			if (this.plateau.getCase(coord[0], coord[1]) instanceof Animal) {
-				System.out.println("cette case contient un animal");
+		if (reponse.equals("fusee")) {
+			if (this.plateau.getNbFusees() > 0) {
+				String colonne = scanReponse.next();
+				int y = alphabet.indexOf(colonne)+1;
+				this.plateau.fuseeDestroy(y);
+			}
+			else {
+				System.out.println("Vous n'avez plus de fusées...");
 				this.move();
 			}
-			//si elle est vide : message d'erreur, on run move() à nouveau
-			else if (this.plateau.getCase(coord[0], coord[1]) == null) {
-				System.out.println("cette case est deja vide");
-				this.move();
-			}
-			else if (this.plateau.getCase(coord[0], coord[1]) instanceof Obstacle) {
-				System.out.println("On ne peut pas détruire un obstacle.");
-				this.move();
-			}
-			//si elle contient une couleur, on la destroy()
-			else {this.plateau.destroy(coord[0], coord[1]);}
-		}
-		catch (ArrayIndexOutOfBoundsException e) { // cas où l'utilisateur choisit une case hors du plateau
-			System.out.println("Cette case n'existe pas.");
-			this.move();
+			//FIXME le plateau s'affiche une nouvelle fois après le message alors qu'il faudrait juste remettre .move(). 
 		}
 		
+		if (reponse.equals("marteau")) {
+			if (this.plateau.getNbMarteaux() > 0) {
+				String coordonnées = scanReponse.next();
+				int[] coord = new int[2];
+				coord[1] = alphabet.indexOf(coordonnées.charAt(0))+1;
+				coord[0] = Integer.valueOf(coordonnées.substring(1));
+				this.plateau.destroy(coord[0], coord[1]);
+			}
+			else {
+				System.out.println("Vous n'avez plus de marteaux...");
+				this.move();
+			}
+		}
+		if(reponse.length() == 2) {
+			int[] coord = new int[2];
+			coord[1] = alphabet.indexOf(reponse.charAt(0))+1;
+			coord[0] = Integer.valueOf(reponse.substring(1));
+
+			try {
+				//on donne les indexs respectifs en argument à destroy si la case est destroyable.
+				//si elle contient un animal : message d'erreur, on run move() à nouveau
+				if (this.plateau.getCase(coord[0], coord[1]) instanceof Animal) {
+					System.out.println("cette case contient un animal");
+					this.move();
+				}
+				//si elle est vide : message d'erreur, on run move() à nouveau
+				else if (this.plateau.getCase(coord[0], coord[1]) == null) {
+					System.out.println("cette case est deja vide");
+					this.move();
+				}
+				else if (this.plateau.getCase(coord[0], coord[1]) instanceof Obstacle) {
+					System.out.println("On ne peut pas détruire un obstacle.");
+					this.move();
+				}
+				//si elle contient une couleur, on la destroy()
+				else {
+					//on vérifie que la boite ne soit pas seule.
+					if (!this.plateau.isAlone(coord[0], coord[1])) {
+						this.plateau.destroy(coord[0], coord[1]);
+						}
+					else {
+						System.out.println("Cette boîte est isolée et ne peut être détruite.");
+						this.move();
+					}
+					}
+					
+			}
+			catch (ArrayIndexOutOfBoundsException e) { // cas où l'utilisateur choisit une case hors du plateau
+				System.out.println("Cette case n'existe pas.");
+				this.move();
+			}
+		}
 	}
 
 	@Override
@@ -129,8 +171,10 @@ public class VueText implements Visible {
 				"/_//_/  \\__/ /_/   / .__/\n" + 
 				"                  /_/   ");
 		System.out.println("Il faut détruire les blocs de chiffres pour faire descendre les @"); // TODO compléter l'aide
-		System.out.println("Pour utiliser la fusée qui détruit une colonne, taper \"fusée A\"");
-		System.out.println("Pour utiliser le marteau qui détruit tous les blocs d'un chiffre, taper \"marteau 2\"");
+		System.out.println("Pour détruire un bloc et les blocs adjacents de la même couleur, taper les coordonnées \"A5"
+				+ "\"");
+		System.out.println("Pour utiliser la fusée qui détruit une colonne, taper \"fusee A\"");
+		System.out.println("Pour utiliser le marteau qui détruit un bloc isolé, taper \"marteau A2\"");
 		System.out.println("\nAppuyer sur entrée pour reprendre le jeu");
 		Scanner sc = new Scanner(System.in);
 		sc.nextLine();
@@ -170,6 +214,10 @@ public class VueText implements Visible {
 		return this.plateau.isGameOver();
 	}
 	
+	public boolean getPlateauWin() {
+		return this.plateau.isWin();
+	}
+	
 	private static void displayLevels() {
 		System.out.println("Niveaux disponibles : ");
 		File levels = new File("./levels/"); // FIXME 2 points ou 1 ? pas pareil dans eclipse et dans le terminal !
@@ -206,7 +254,28 @@ public class VueText implements Visible {
 		if (ans.equals("o")) { // si o > on renvoie true pour déclencer un redémarrage dans env
 			return true;
 		}
-		return false;
+		else if (ans.equals("n")) {
+			return false;
+		}
+		else {return this.startAgain();}
+		
 	}
 	
+	public boolean choiceOrNext() {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Choisir un niveau ou continuer ? (new/next) ");
+		String ans = sc.next();
+		if (ans.equals("next")) { // si next > on lance le prochain niveauo
+			return false;
+		}
+		
+		else if (ans.equals("new")) {
+			return true; //si new > n renvoie true pour déclencer un choixNiveau
+		}
+		//sinon, mauvaise saisie, on redemande
+		else {
+			System.out.println("je n'ai pas compris");
+			return this.choiceOrNext();
+		}
+	}
 }

@@ -1,10 +1,13 @@
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Scanner;
+
 
 //ajout d'un petit commentaire pour tester
 // petite réponse pour tester
@@ -13,9 +16,9 @@ import java.util.Scanner;
 /**
  * Charge les niveaux depuis les fichiers dans une matrice 
  * Contient aussi les phases du jeu au sein d'un niveau ?
- * 	création plateau
- * 	actions du joueur
- * 	fin de la partie
+ * création plateau
+ * actions du joueur
+ * fin de la partie
  * 
  *
  */
@@ -24,6 +27,8 @@ public class Niveau {
 	private int numeroNiveau;
 	private int animauxASauver;  // nombre d'animaux dans ce niveau (ne changera pas)
 	private int moves;
+	private int nbFusees;
+	private int nbMarteaux;
 	
 	/**
 	 * Constructeur de niveau. Sert à charger un niveau depuis un fichier.
@@ -42,7 +47,7 @@ public class Niveau {
 			
 			// compte nombre de lignes
 			// source : https://mkyong.com/java/how-to-get-the-total-number-of-lines-of-a-file-in-java/
-			long lines = Files.lines(path).count() - 1;	 // moins 1 car la dernière ligne contient le "sol" ____		
+			long lines = Files.lines(path).count() - 2;	 // moins 2 car les deux dernières lignes contiennent le "sol" ____ puis fusees/marteaux		
 						
 			Scanner sc = new Scanner(new File(adresse));
 			sc.useDelimiter("\n"); // découpage ligne par ligne
@@ -76,6 +81,14 @@ public class Niveau {
 				row = new Scanner(sc.next());
 			}
 			this.moves = this.animauxASauver + y; //la formule est (nombre de blocs explosés au carré) fois 10
+			
+			//pour chercher le nombre de fusees et de marteaux :
+			//méthode trouvée sur StackOverflow pour lire directement la dernière ligne
+			List<String> allLines = Files.readAllLines(path);
+			String lastLine = allLines.get(allLines.size()-1);
+		    this.nbFusees = Character.getNumericValue(lastLine.charAt(0));
+		    this.nbMarteaux = Character.getNumericValue(lastLine.charAt(1));
+			
 		} catch (FileNotFoundException e) {
 			System.out.println(String.format("Fichier niveau non trouvé (niveau n° %d)",numeroNiveau));
 		} catch (IOException e) {
@@ -101,5 +114,15 @@ public class Niveau {
 		return moves;
 	}
 	
+	public int getNumero() {
+		return this.numeroNiveau;
+	}
 	
+	public int getNbFusees() {
+		return this.nbFusees;
+	}
+	
+	public int getNbMarteaux() {
+		return this.nbMarteaux;
+	}
 }
