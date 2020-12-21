@@ -16,7 +16,7 @@ public class Plateau {
 	private int boitesDetruites = 0; // utilisé pour calculer le score dans updateScore
 	private int nbFusee = 0;
 	private int nbMarteaux = 0;//instancié à 1 mais il faudrait ajouter l'info dans le level puis l'extraire dans le constructeur
-
+	public boolean exit = false;
 	/**
 	 * Constructeur de plateau à partir d'un niveau + une vue
 	 * @param niveau
@@ -75,11 +75,11 @@ public class Plateau {
 	 * Détruit la boite aux coordonnées sélectionnées et tous les boites de la même couleur à côté d'elle
 	 * @param boite
 	 */
-	public void destroy(int y, int x) { // FIXME il ne faut pas que ça marche si la boîte n'a pas de voisine de la même couleur !
+	public void destroy(int y, int x) {
 		if (this.matriceElements[y][x] instanceof Boite) {
 			int valeurBoite = ((Boite) matriceElements[y][x]).getCouleur(); // mémorise valeur dans boîte
 			matriceElements[y][x] = null; // avant de l'effacer
-			this.boitesDetruites++; // on compte la boite détruite
+			this.boitesDetruites++; // on compte la boite détruite, pour le score
 			int[][] boitesAdja = {{y+1,x},{y-1,x},{y,x+1},{y,x-1}}; // coordonnées des boîtes adjacentes
 			
 			// pour chaque boite de la liste
@@ -193,7 +193,7 @@ public class Plateau {
 		//nombre de moves executés
 		int moves = 0;
 		//tant qu'il reste des animaux :
-		while (this.animauxRestants != 0 && !this.isGameOver()) {
+		while (this.animauxRestants != 0 && !this.isGameOver() && !this.exit) {
 			this.vue.move();
 			// on met à jour le score après le move
 			//on incrémente notre nombre de moves

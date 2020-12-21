@@ -21,7 +21,6 @@ public class Environnement {
 	 * @return
 	 */
 	private Niveau choixNiveau() {
-		// sc.close(); FIXME pourquoi jouer() ne marche plus si on close le scanner ?
 		int n = this.vue.choixNiveau();
 		Niveau niveau = new Niveau(n);
 		this.niveau = niveau;
@@ -91,6 +90,11 @@ public class Environnement {
 		env.startniveau();
 		// tant que exit est false, on continue.
 		while (!exit) {
+			if (env.plateau.exit) {
+				env.plateau.exit = false;
+				env.niveau = env.choixNiveau();
+				env.startniveau();
+			}
 			if (env.plateau.isGameOver()) {
 				// si game over, on demande start again
 				exit = env.startAgain();
@@ -99,6 +103,7 @@ public class Environnement {
 				//TODO ajouter une commande exit à tous les scanners pour pouvoir exit à tout moment du jeu.
 			}
 			if (env.plateau.isWin()) {
+				env.joueur.update(env.niveau.getNumero(), env.plateau.getScore());
 				// si win, on demande choice or next
 				// choice or next = true > choix niveau
 				if (env.choiceOrNext()) {

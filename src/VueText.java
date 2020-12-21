@@ -84,7 +84,7 @@ public class VueText implements Visible {
 
 	@Override
 	
-	public void move() throws ArrayIndexOutOfBoundsException {
+	public void move() {
 		//TODO il faudrait qu'on puisse écrire fusee, marteau et
 		// même les coordonnées de plusieurs façon différentes pour éviter les misspell errors
 
@@ -168,14 +168,14 @@ public class VueText implements Visible {
 					//si elle contient une couleur, on la destroy()
 					else {
 						//on vérifie que la boite ne soit pas seule.
-						if (!this.plateau.isAlone(coord[0], coord[1])) {
+						if (!this.plateau.isAlone(coord[0], coord[1])) { // FIXME on devrait mettre ça dans le plateau, car c'est plutôt de la logique que de l'affichage
 							this.plateau.destroy(coord[0], coord[1]);
 							}
 						else {
 							System.out.println("Cette boîte est isolée et ne peut être détruite.");
 							this.move();
 						}
-						}
+					}
 						
 				}
 				catch (ArrayIndexOutOfBoundsException e) { // cas où l'utilisateur choisit une case hors du plateau
@@ -196,11 +196,16 @@ public class VueText implements Visible {
 				" / _  / / -_) / /   / _ \\\n" + 
 				"/_//_/  \\__/ /_/   / .__/\n" + 
 				"                  /_/   ");
-		System.out.println("Il faut détruire les blocs de chiffres pour faire descendre les @"); // TODO compléter l'aide
-		System.out.println("Pour détruire un bloc et les blocs adjacents de la même couleur, taper les coordonnées \"A5"
+		System.out.println("Obejctif : Il faut détruire les blocs de chiffres \npour faire descendre les @.\n"); // TODO compléter l'aide
+		System.out.println("Pour détruire un bloc et les blocs adjacents de la même couleur,\n taper les coordonnées \"A5"
 				+ "\"");
-		System.out.println("Pour utiliser la fusée qui détruit une colonne, taper \"fusee A\"");
-		System.out.println("Pour utiliser le marteau qui détruit un bloc isolé, taper \"marteau A2\"");
+		System.out.println("Pour utiliser la fusée qui détruit une colonne, "
+				+ "\n		taper \"fusee A\"");
+		System.out.println("Pour utiliser le marteau qui détruit un bloc isolé, "
+				+ "\n		taper \"marteau A2\"");
+		System.out.println("Pour quitter la partie,"
+				+ "\n		taper \"exit\"");
+		System.out.println();
 		System.out.println("\nAppuyer sur entrée pour reprendre le jeu");
 		Scanner sc = new Scanner(System.in);
 		sc.nextLine();
@@ -232,8 +237,7 @@ public class VueText implements Visible {
 
 	@Override
 	public void exit() {
-		// TODO plutôt this.welcome() ? comment rebooter l'env ?...
-		// FIXME ça ne marche pas !
+		this.plateau.exit = true;
 	}
 
 	@Override
@@ -245,7 +249,7 @@ public class VueText implements Visible {
 		return this.plateau.isWin();
 	}
 	
-	private static void displayLevels() { // TODO ajouter les scores
+	private void displayLevels() { // TODO ajouter les scores
 		
 		System.out.println("Niveaux disponibles : ");
 		File levels = new File("./levels/"); // FIXME 2 points ou 1 ? pas pareil dans eclipse et dans le terminal !
@@ -257,14 +261,21 @@ public class VueText implements Visible {
 			listLevelNames.add(level.getName());
 		}
 		Collections.sort(listLevelNames);
+		
 		for (String level : listLevelNames) {
-			System.out.println(level);
+			if (this.joueur.isDebloque(level)) { // si le niveau est débloqué
+				System.out.print(level); // on l'affiche
+				if (this.joueur.getScore(level) > 0) {
+					System.out.print("\t" + this.joueur.getScore(level));
+				}
+				System.out.println();
+			}
 		}
 	}
 
 	@Override
 	public int choixNiveau() {
-		displayLevels();
+		this.displayLevels();
 		//on demande au joueur de selectionner un niveau 
 		// ces 3 lignes correspondent à une fonction de la vue "choixNiveau"
 		Scanner sc = new Scanner(System.in);
