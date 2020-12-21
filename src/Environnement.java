@@ -1,4 +1,4 @@
-import java.util.Scanner;
+import java.io.*;
 
 public class Environnement {
 	Visible vue;
@@ -10,10 +10,13 @@ public class Environnement {
 	 * Constructeur de l'environnement
 	 * @param vue (text ou graphique)
 	 */
-	public Environnement(Visible vue, Joueur joueur) {
-		this.joueur = joueur;
+	public Environnement(Visible vue) {
 		this.vue = vue; // choix de la vue lors de la création de l'environnement
 		this.vue.welcome();
+		String nomJoueur = this.vue.choixJoueur();
+		if (!this.loadJoueur(nomJoueur)) { // si on ne peut pas charger le joueur (sinon ça le charge)
+			this.joueur = new Joueur(nomJoueur); // on en crée un nouveau
+		}
 	}
 	
 	/**
@@ -64,6 +67,37 @@ public class Environnement {
 		return false;
 	}
 	
+	private void save() throws IOException {
+		FileOutputStream fileOut = new FileOutputStream(this.joueur.getNom().toLowerCase() + ".ser");
+	    ObjectOutputStream out = new ObjectOutputStream(fileOut);
+	    out.writeObject(this.joueur);
+	    out.close();
+	}
+	
+	private boolean loadJoueur(String name) {
+		try {
+			FileInputStream fileIn = new FileInputStream(name.toLowerCase() + ".ser");
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+
+		    this.joueur = (Joueur) in.readObject();
+		    in.close();
+		    fileIn.close();
+		    return true;
+		}
+		catch (IOException e) {
+			return false; // false si le fichier n'existe pas
+		}
+		catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		}
+	    
+	}
+	
+	public Joueur getJoueur() {
+		return this.joueur;
+	}
+		
 	public static void main(String[] args) {
 //		VueText vue = new VueText();
 //		Environnement env = new Environnement(vue);
@@ -81,10 +115,9 @@ public class Environnement {
 //			}
 //		}
 		
-		Joueur jojo = new Joueur("Jojo"); // TODO méthode qui demande le nom du joueur
 		VueText vue = new VueText(); // création de la vue
-		vue.setJoueur(jojo);
-		Environnement env = new Environnement(vue, jojo); // création de l'environnement avec cette vue en attribut
+		Environnement env = new Environnement(vue); // création de l'environnement avec cette vue en attribut
+		vue.setJoueur(env.getJoueur());
 		env.choixNiveau();
 		boolean exit = false;
 		env.startniveau();
@@ -98,12 +131,15 @@ public class Environnement {
 			if (env.plateau.isGameOver()) {
 				// si game over, on demande start again
 				exit = env.startAgain();
-				if (exit == false) {break;} //pour l'instant on sort juste de la boucle. - esk ça sort vraiment de la boucle ?
-				//TODO trouver un moyen de revenir à l'accueil si exit : false -- plutôt true, non ?
-				//TODO ajouter une commande exit à tous les scanners pour pouvoir exit à tout moment du jeu.
+				if (exit == false) {break;} //TODO pour l'instant on sort juste de la boucle. - esk ça sort vraiment de la boucle ?
 			}
 			if (env.plateau.isWin()) {
 				env.joueur.update(env.niveau.getNumero(), env.plateau.getScore());
+				try {
+					env.save();
+				} catch (IOException e) {
+					System.out.println("impossile de sauvegarder");
+				}
 				// si win, on demande choice or next
 				// choice or next = true > choix niveau
 				if (env.choiceOrNext()) {

@@ -37,12 +37,15 @@ public class Joueur implements Serializable {
 		return niveauxDebloques[Integer.valueOf(niveau)]; // surcharge car parfois plus pratique de mettre une string
 	}
 	
-	
 	public int getScore(int niveau) {
 		return topScores[niveau];
 	}
 	
-	public int getScore(String niveau) {
-		return topScores[Integer.valueOf(niveau)];
+	public int getScore(String niveau) { // surcharge
+		return topScores[Integer.valueOf(niveau)]; 
+	}
+	
+	public String getNom() {
+		return this.nom;
 	}
 }

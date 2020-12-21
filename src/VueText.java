@@ -317,4 +317,11 @@ public class VueText implements Visible {
 			return this.choiceOrNext();
 		}
 	}
+	
+	public String choixJoueur() {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Nom du joueur·euse ?");
+		String nom = sc.next();
+		return nom;
+	}
 }

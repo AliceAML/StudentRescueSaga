@@ -74,6 +74,8 @@ public interface Visible {
 	 * demande si on veut choisir un niveau ou faire le prochainj
 	 * @return
 	 */
-	public boolean choiceOrNext(); 
+	public boolean choiceOrNext();
+
+	public String choixJoueur(); 
 
 }
