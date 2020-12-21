@@ -3,7 +3,12 @@ import java.util.Scanner;
 public class Environnement {
 	Visible vue;
 	Niveau niveau;
+	Plateau plateau;
 	
+	/**
+	 * Constructeur de l'environnement
+	 * @param vue (text ou graphique)
+	 */
 	public Environnement(Visible vue) {
 		this.vue = vue; // choix de la vue lors de la création de l'environnement
 		this.vue.welcome();
@@ -24,25 +29,31 @@ public class Environnement {
 	/**
 	 * Méthode qui lance le niveau choix (entré en paramètre)
 	 */
-	public void startniveau(Niveau niveau) {
+	public void startniveau() {
 		Plateau plateau = new Plateau(niveau, vue);
 		this.vue.setPlateau(plateau); // il faut modifier le plateau à chaque fois qu'on (re)commence un niveau
-		plateau.jouer();
+		this.plateau = plateau;
+		this.plateau.jouer();
 	}	
 	
 	/**
-	 * Méthode qui relance le même niveau si game over & le joueur choisi de rejouer
+	 * Méthode qui demande si le joueur veut rejouer
 	 * @param niveau
-	 * @return
+	 * @return booléan
 	 */
-	public boolean startAgain(Niveau niveau) {
-		if (this.vue.getPlateauGameOver() && this.vue.startAgain()) {
-			this.startniveau(niveau);
+	public boolean startAgain() {
+		if (this.plateau.isGameOver() && this.vue.startAgain()) {
+			this.startniveau();
 			return true;
 		}
 		return false;
 	}
 	
+	/**
+	 * Si le niveau est gagné, on propose à l'utilisateur d'avancer au niveau suivant
+	 * Où de choisir un autre niveau
+	 * @return
+	 */
 	public boolean choiceOrNext() {
 		//si true, l'utilisateur à choisit "choix"
 		if (this.vue.choiceOrNext()) {
@@ -69,31 +80,31 @@ public class Environnement {
 //			}
 //		}
 		
-		VueText vue = new VueText();
-		Environnement env = new Environnement(vue);
+		VueText vue = new VueText(); // création de la vue
+		Environnement env = new Environnement(vue); // création de l'environnement avec cette vue en attribut
 		env.choixNiveau();
 		boolean exit = false;
-		env.startniveau(env.niveau);
-		// tant que exit est true, on continue.
+		env.startniveau();
+		// tant que exit est false, on continue.
 		while (!exit) {
-			if (env.vue.getPlateauGameOver()) {
+			if (env.plateau.isGameOver()) {
 				// si game over, on demande start again
-				exit = env.startAgain(env.niveau);
-				if (exit == false) {break;} //pour l'instant on sort juste de la boucle.
-				//TODO trouver un moyen de revenir à l'accueuil si exit : false
+				exit = env.startAgain();
+				if (exit == false) {break;} //pour l'instant on sort juste de la boucle. - esk ça sort vraiment de la boucle ?
+				//TODO trouver un moyen de revenir à l'accueil si exit : false -- plutôt true, non ?
 				//TODO ajouter une commande exit à tous les scanners pour pouvoir exit à tout moment du jeu.
 			}
-			if (env.vue.getPlateauWin()) {
+			if (env.plateau.isWin()) {
 				// si win, on demande choice or next
 				// choice or next = true > choix niveau
 				if (env.choiceOrNext()) {
 					env.niveau = env.choixNiveau();
-					env.startniveau(env.niveau);
+					env.startniveau();
 				}
 				// choice or next = false > next niveau
 				else {
 					env.niveau = new Niveau(env.niveau.getNumero() + 1);
-					env.startniveau(env.niveau);
+					env.startniveau();
 				}
 			}
 		}

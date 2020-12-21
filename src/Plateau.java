@@ -16,9 +16,7 @@ public class Plateau {
 	private int boitesDetruites = 0; // utilisé pour calculer le score dans updateScore
 	private int nbFusee = 0;
 	private int nbMarteaux = 0;//instancié à 1 mais il faudrait ajouter l'info dans le level puis l'extraire dans le constructeur
-	//TODO donner un nombre de fusée à chaque niveau et l'extraire dans le constructeur
-	
-	
+
 	/**
 	 * Constructeur de plateau à partir d'un niveau + une vue
 	 * @param niveau
@@ -53,7 +51,6 @@ public class Plateau {
 	}
 	
 	public boolean isAlone(int y, int x) { 
-		System.out.println(y + "" + x);
 		//on part avec 0 boites adjacentes
 		int adja = 0;
 		if (this.matriceElements[y][x] instanceof Boite) {
@@ -113,8 +110,7 @@ public class Plateau {
 	}
 	
 	//méthode destroy adaptée à marteau qui diminue le nb de marteaux.
-	//un peu inutile pour l'instant mais c'est plus clair comme ça.
-	public void marteauDestroy(int y, int x) {
+	public void marteauDestroy(int y, int x) throws ArrayIndexOutOfBoundsException {
 		if (this.nbMarteaux > 0) {
 			this.destroy(y, x);
 			this.nbMarteaux--;
@@ -192,14 +188,12 @@ public class Plateau {
 			this.vue.afficherPlateau();
 		}
 		catch (NullPointerException e) {
-			System.out.println("Il faut set le plateau de la vue.");
+			System.out.println("Il faut set le plateau de la vue."); // FIXME pas de println dans le plateau
 		}
 		//nombre de moves executés
 		int moves = 0;
 		//tant qu'il reste des animaux :
 		while (this.animauxRestants != 0 && !this.isGameOver()) {
-			System.out.println();
-			//on choisit une case à cliquer 
 			this.vue.move();
 			// on met à jour le score après le move
 			//on incrémente notre nombre de moves

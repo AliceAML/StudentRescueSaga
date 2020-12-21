@@ -43,13 +43,13 @@ public class Niveau {
 		Path path = Paths.get(adresse);
 		
 		// ouverture du fichier dans un scanner
-		try {
+		try (Scanner sc = new Scanner(new File(adresse))) { // try with resources pour fermer le scanner après lecture
 			
 			// compte nombre de lignes
 			// source : https://mkyong.com/java/how-to-get-the-total-number-of-lines-of-a-file-in-java/
 			long lines = Files.lines(path).count() - 2;	 // moins 2 car les deux dernières lignes contiennent le "sol" ____ puis fusees/marteaux		
 						
-			Scanner sc = new Scanner(new File(adresse));
+			
 			sc.useDelimiter("\n"); // découpage ligne par ligne
 			
 			

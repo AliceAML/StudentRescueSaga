@@ -80,30 +80,36 @@ public class VueText implements Visible {
 	@Override
 	
 	public void move() throws ArrayIndexOutOfBoundsException {
-		//TODO il faudrait qu'on puisse écrire fusee, marteau et même les coordonnées de plusieurs façon différentes pour éviter les misspell errors
-		//FIXME il faudrait ouvrir le scanner ici ? et le fermer ?...
+		//TODO il faudrait qu'on puisse écrire fusee, marteau et
+		// même les coordonnées de plusieurs façon différentes pour éviter les misspell errors
 
-		
 		//on vient chercher la String de cordonnées lue dans le scanner
 		System.out.println("Coordonnées à détruire (A1, C7...) : ");
-		String reponse = scanReponse.next();
+		String reponse = scanReponse.next().toUpperCase();
+		// normalisation de reponse pour supprimer les accents
 		//on stockera les deux indexs correspondants dans un int[]
 		//on regarde d'abord si l'utilisateur veut utiliser des coups spéciaux ou des commandes
 		
 		
-		if (reponse.equals("help")) {
+		if (reponse.equals("HELP")) {
 			this.help();
 			this.afficherPlateau();
 			this.move();
 		}
-		else if (reponse.equals("exit")) {
+		else if (reponse.equals("EXIT")) {
 			this.exit();
 		}
-		else if (reponse.equals("fusee")) {
+		else if (reponse.equals("FUSEE") || reponse.equals("FUSÉE")) {
 			if (this.plateau.getNbFusees() > 0) {
-				String colonne = scanReponse.next();
+				String colonne = scanReponse.next().toUpperCase();
 				int y = alphabet.indexOf(colonne)+1;
-				this.plateau.fuseeDestroy(y);
+				try {
+					this.plateau.fuseeDestroy(y);
+				}
+				catch (ArrayIndexOutOfBoundsException e) {
+					System.out.println("Cette colonne n'existe pas");
+					this.move();
+				}
 			}
 			else {
 				System.out.println("Vous n'avez plus de fusées...");
@@ -112,13 +118,19 @@ public class VueText implements Visible {
 			//FIXME le plateau s'affiche une nouvelle fois après le message alors qu'il faudrait juste remettre .move(). 
 		}
 		
-		else if (reponse.equals("marteau")) {
+		else if (reponse.equals("MARTEAU")) {
 			if (this.plateau.getNbMarteaux() > 0) {
 				String coordonnées = scanReponse.next();
 				int[] coord = new int[2];
 				coord[1] = alphabet.indexOf(coordonnées.charAt(0))+1;
 				coord[0] = Integer.valueOf(coordonnées.substring(1));
-				this.plateau.marteauDestroy(coord[0], coord[1]);
+				try {
+					this.plateau.marteauDestroy(coord[0], coord[1]);
+				}
+				catch (ArrayIndexOutOfBoundsException e) {
+					System.out.println("Cette case n'existe pas.");
+					this.move();
+				}
 			}
 			else {
 				System.out.println("Vous n'avez plus de marteaux...");
@@ -128,41 +140,46 @@ public class VueText implements Visible {
 		}
 		//if(reponse.length() == 2) {
 		else {
-			int[] coord = new int[2];
-			coord[1] = alphabet.indexOf(reponse.charAt(0))+1;
-			coord[0] = Integer.valueOf(reponse.substring(1));
-
 			try {
-				//on donne les indexs respectifs en argument à destroy si la case est destroyable.
-				//si elle contient un animal : message d'erreur, on run move() à nouveau
-				if (this.plateau.getCase(coord[0], coord[1]) instanceof Animal) {
-					System.out.println("cette case contient un animal");
-					this.move();
-				}
-				//si elle est vide : message d'erreur, on run move() à nouveau
-				else if (this.plateau.getCase(coord[0], coord[1]) == null) {
-					System.out.println("cette case est deja vide");
-					this.move();
-				}
-				else if (this.plateau.getCase(coord[0], coord[1]) instanceof Obstacle) {
-					System.out.println("On ne peut pas détruire un obstacle.");
-					this.move();
-				}
-				//si elle contient une couleur, on la destroy()
-				else {
-					//on vérifie que la boite ne soit pas seule.
-					if (!this.plateau.isAlone(coord[0], coord[1])) {
-						this.plateau.destroy(coord[0], coord[1]);
-						}
-					else {
-						System.out.println("Cette boîte est isolée et ne peut être détruite.");
+				int[] coord = new int[2];
+				coord[1] = alphabet.indexOf(reponse.charAt(0))+1;
+				coord[0] = Integer.valueOf(reponse.substring(1));
+				try {
+					//on donne les indexs respectifs en argument à destroy si la case est destroyable.
+					//si elle contient un animal : message d'erreur, on run move() à nouveau
+					if (this.plateau.getCase(coord[0], coord[1]) instanceof Animal) {
+						System.out.println("cette case contient un animal");
 						this.move();
 					}
+					//si elle est vide : message d'erreur, on run move() à nouveau
+					else if (this.plateau.getCase(coord[0], coord[1]) == null) {
+						System.out.println("cette case est deja vide");
+						this.move();
 					}
-					
+					else if (this.plateau.getCase(coord[0], coord[1]) instanceof Obstacle) {
+						System.out.println("On ne peut pas détruire un obstacle.");
+						this.move();
+					}
+					//si elle contient une couleur, on la destroy()
+					else {
+						//on vérifie que la boite ne soit pas seule.
+						if (!this.plateau.isAlone(coord[0], coord[1])) {
+							this.plateau.destroy(coord[0], coord[1]);
+							}
+						else {
+							System.out.println("Cette boîte est isolée et ne peut être détruite.");
+							this.move();
+						}
+						}
+						
+				}
+				catch (ArrayIndexOutOfBoundsException e) { // cas où l'utilisateur choisit une case hors du plateau
+					System.out.println("Cette case n'existe pas.");
+					this.move();
+				}
 			}
-			catch (ArrayIndexOutOfBoundsException e) { // cas où l'utilisateur choisit une case hors du plateau
-				System.out.println("Cette case n'existe pas.");
+			catch (NumberFormatException e) {
+				System.out.println("Désolée, je n'ai pas compris.");
 				this.move();
 			}
 		}
@@ -210,7 +227,8 @@ public class VueText implements Visible {
 
 	@Override
 	public void exit() {
-		this.afficherEnv(); // TODO plutôt this.welcome() ? comment rebooter l'env ?...
+		// TODO plutôt this.welcome() ? comment rebooter l'env ?...
+		// FIXME ça ne marche pas !
 	}
 
 	@Override
@@ -222,7 +240,8 @@ public class VueText implements Visible {
 		return this.plateau.isWin();
 	}
 	
-	private static void displayLevels() {
+	private static void displayLevels() { // TODO ajouter les scores
+		
 		System.out.println("Niveaux disponibles : ");
 		File levels = new File("./levels/"); // FIXME 2 points ou 1 ? pas pareil dans eclipse et dans le terminal !
 		// regarder ici : https://stackoverflow.com/questions/437382/how-do-relative-file-paths-work-in-eclipse
