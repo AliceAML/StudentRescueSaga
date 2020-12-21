@@ -252,7 +252,7 @@ public class VueText implements Visible {
 	private void displayLevels() { // TODO ajouter les scores
 		
 		System.out.println("Niveaux disponibles : ");
-		File levels = new File("./levels/"); // FIXME 2 points ou 1 ? pas pareil dans eclipse et dans le terminal !
+		File levels = new File("../levels/"); // FIXME 2 points ou 1 ? pas pareil dans eclipse et dans le terminal !
 		// regarder ici : https://stackoverflow.com/questions/437382/how-do-relative-file-paths-work-in-eclipse
 		// faire en sorte que ça marche aussi sur Windows avec file separator
 		// + utiliser getResourceAsStream

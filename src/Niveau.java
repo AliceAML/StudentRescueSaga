@@ -39,7 +39,7 @@ public class Niveau {
 		this.numeroNiveau = numeroNiveau;
 		
 		// chemin du fichier niveau sous forme de String et de Path
-		String adresse = "./levels/" + Integer.toString(this.numeroNiveau);
+		String adresse = "../levels/" + Integer.toString(this.numeroNiveau);
 		Path path = Paths.get(adresse);
 		
 		// ouverture du fichier dans un scanner

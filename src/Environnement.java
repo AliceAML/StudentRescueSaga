@@ -68,7 +68,7 @@ public class Environnement {
 	}
 	
 	private void save() throws IOException {
-		FileOutputStream fileOut = new FileOutputStream(this.joueur.getNom().toLowerCase() + ".ser");
+		FileOutputStream fileOut = new FileOutputStream("../sauvegardes/" + this.joueur.getNom().toLowerCase() + ".ser");
 	    ObjectOutputStream out = new ObjectOutputStream(fileOut);
 	    out.writeObject(this.joueur);
 	    out.close();
@@ -76,7 +76,7 @@ public class Environnement {
 	
 	private boolean loadJoueur(String name) {
 		try {
-			FileInputStream fileIn = new FileInputStream(name.toLowerCase() + ".ser");
+			FileInputStream fileIn = new FileInputStream("../sauvegardes/" + name.toLowerCase() + ".ser");
 			ObjectInputStream in = new ObjectInputStream(fileIn);
 
 		    this.joueur = (Joueur) in.readObject();
