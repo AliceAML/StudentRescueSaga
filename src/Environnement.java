@@ -4,12 +4,14 @@ public class Environnement {
 	Visible vue;
 	Niveau niveau;
 	Plateau plateau;
+	Joueur joueur;
 	
 	/**
 	 * Constructeur de l'environnement
 	 * @param vue (text ou graphique)
 	 */
-	public Environnement(Visible vue) {
+	public Environnement(Visible vue, Joueur joueur) {
+		this.joueur = joueur;
 		this.vue = vue; // choix de la vue lors de la création de l'environnement
 		this.vue.welcome();
 	}
@@ -80,8 +82,10 @@ public class Environnement {
 //			}
 //		}
 		
+		Joueur jojo = new Joueur("Jojo"); // TODO méthode qui demande le nom du joueur
 		VueText vue = new VueText(); // création de la vue
-		Environnement env = new Environnement(vue); // création de l'environnement avec cette vue en attribut
+		vue.setJoueur(jojo);
+		Environnement env = new Environnement(vue, jojo); // création de l'environnement avec cette vue en attribut
 		env.choixNiveau();
 		boolean exit = false;
 		env.startniveau();

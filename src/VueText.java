@@ -6,6 +6,7 @@ import java.util.Scanner;
 public class VueText implements Visible {
 	
 	private Plateau plateau;
+	private Joueur joueur;
 	
 	String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	
@@ -13,14 +14,18 @@ public class VueText implements Visible {
 
 	public VueText() {
 		this.plateau = null; // la vue n'a pas de plateau à l'initialisation, elle s'ouvre sur l'environnement
+		this.joueur = new Joueur("John Doe");
 	}
 //	
 //	public VueText(Plateau plateau) {
 //get		this.plateau = plateau;
 //	}
-	
 	public void setPlateau(Plateau plateau) {
 		this.plateau = plateau;
+	}
+	
+	public void setJoueur(Joueur joueur) {
+		this.joueur = joueur;
 	}
 
 	@Override
