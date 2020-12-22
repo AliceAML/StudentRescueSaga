@@ -99,23 +99,13 @@ public class Environnement {
 	}
 		
 	public static void main(String[] args) {
-//		VueText vue = new VueText();
-//		Environnement env = new Environnement(vue);
-//		Niveau niveau = env.choixNiveau();
-//		env.startniveau(niveau);
-//		while (env.vue.getPlateauGameOver() && env.startAgain(niveau)) {}
-//		while (env.vue.getPlateauWin()) {
-//			if (env.choiceOrNext()) {
-//				Niveau NewNiveau = env.choixNiveau();
-//				env.startniveau(NewNiveau);
-//			}
-//			else {
-//				Niveau NextNiveau = new Niveau(niveau.getNumero() + 1);
-//				env.startniveau(NextNiveau);
-//			}
-//		}
-		
-		VueText vue = new VueText(); // création de la vue
+		Visible vue;
+		if (args.length == 0) { // GUI si pas d'arg
+			vue = new VueGUI();
+		}
+		else { // vue text si un arg
+			vue = new VueText(); // création de la vue
+		}
 		Environnement env = new Environnement(vue); // création de l'environnement avec cette vue en attribut
 		vue.setJoueur(env.getJoueur());
 		env.choixNiveau();

@@ -16,7 +16,7 @@ public interface Visible {
 	/**
 	 * méthode qui affiche l'environnement
 	 */
-	public void afficherEnv();
+//	public void afficherEnv();
 	
 	/**
 	 * méthode qui renvoie les coordonnées de la boîte sélectionnée par le joueur
@@ -76,6 +76,11 @@ public interface Visible {
 	 */
 	public boolean choiceOrNext();
 
-	public String choixJoueur(); 
+	public String choixJoueur();
+
+	void setJoueur(Joueur joueur); 
+	
+	void displayLevels();
+	
 
 }

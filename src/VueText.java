@@ -14,16 +14,17 @@ public class VueText implements Visible {
 
 	public VueText() {
 		this.plateau = null; // la vue n'a pas de plateau à l'initialisation, elle s'ouvre sur l'environnement
-		this.joueur = new Joueur("John Doe");
 	}
 //	
 //	public VueText(Plateau plateau) {
 //get		this.plateau = plateau;
 //	}
+	@Override
 	public void setPlateau(Plateau plateau) {
 		this.plateau = plateau;
 	}
 	
+	@Override
 	public void setJoueur(Joueur joueur) {
 		this.joueur = joueur;
 	}
@@ -76,14 +77,8 @@ public class VueText implements Visible {
 		
 	}
 
-	@Override
-	public void afficherEnv() {
-		// TODO définir afficherEnv
-
-	}
 
 	@Override
-	
 	public void move() {
 		//TODO il faudrait qu'on puisse écrire fusee, marteau et
 		// même les coordonnées de plusieurs façon différentes pour éviter les misspell errors
@@ -249,13 +244,10 @@ public class VueText implements Visible {
 		return this.plateau.isWin();
 	}
 	
-	private void displayLevels() { // TODO ajouter les scores
-		
+	@Override
+	private void displayLevels() {
 		System.out.println("Niveaux disponibles : ");
-		File levels = new File("../levels/"); // FIXME 2 points ou 1 ? pas pareil dans eclipse et dans le terminal !
-		// regarder ici : https://stackoverflow.com/questions/437382/how-do-relative-file-paths-work-in-eclipse
-		// faire en sorte que ça marche aussi sur Windows avec file separator
-		// + utiliser getResourceAsStream
+		File levels = new File("../levels/");
 		ArrayList<String> listLevelNames = new ArrayList<String>(); // liste pour stocker noms des niveaux
 		for (File level : levels.listFiles()) {
 			listLevelNames.add(level.getName());
@@ -300,6 +292,7 @@ public class VueText implements Visible {
 		
 	}
 	
+	@Override
 	public boolean choiceOrNext() {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Choisir un niveau ou continuer ? (new/next) ");
@@ -318,6 +311,10 @@ public class VueText implements Visible {
 		}
 	}
 	
+	/**
+	 * Retourne le nom du joueur pour que l'env load la sauvegarde
+	 */
+	@Override
 	public String choixJoueur() {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Nom du joueur·euse ?");
