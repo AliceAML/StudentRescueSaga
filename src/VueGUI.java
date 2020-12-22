@@ -67,7 +67,7 @@ public class VueGUI extends JFrame implements Visible {
 		ImageIcon image = new ImageIcon("../images/monkey.png");
 		JLabel logo = new JLabel(image, JLabel.CENTER);
 		
-		JLabel but = new JLabel("Détruisez les blocs de chiffres pour sauver les animaux !", JLabel.CENTER);
+		JLabel but = new JLabel("Détruisez les blocs pour sauver les animaux !", JLabel.CENTER);
 
 		
 		titre.add(logo);

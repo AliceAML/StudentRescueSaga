@@ -108,7 +108,7 @@ public class Environnement {
 		}
 		Environnement env = new Environnement(vue); // création de l'environnement avec cette vue en attribut
 		vue.setJoueur(env.getJoueur());
-		env.choixNiveau();
+		env.choixNiveau(); // FIXME problème, dans la vue graphique, ça devrait être déclenché par l'utilisateur, qui cliquerait sur start 
 		boolean exit = false;
 		env.startniveau();
 		// tant que exit est false, on continue.
