@@ -16,6 +16,7 @@ public class VueGUI extends JFrame implements Visible {
 		setTitle("Pet Rescue Saga");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
+		setLayout(new CardLayout());
 	}
 
 	// réinitialise la fenêtre
@@ -55,19 +56,20 @@ public class VueGUI extends JFrame implements Visible {
 
 	@Override
 	public void welcome() {
-		this.clear();
+//		this.clear();
 		
 		// PANEL TITRE
 		JPanel titre = new JPanel();
 		
-		JLabel titreText = new JLabel("<html>Pet<br>Rescue<br>Saga</html>", JLabel.CENTER);
+		JLabel titreText = new JLabel("<html>Student<br>Rescue<br>Saga</html>", JLabel.CENTER);
 		titreText.setFont(new Font("SansSerif", Font.BOLD, 60));
 //		titre.setHorizontalAlignment(0);
 		
-		ImageIcon image = new ImageIcon("../images/monkey.png");
+		ImageIcon image = new ImageIcon("../images/student.png");
 		JLabel logo = new JLabel(image, JLabel.CENTER);
 		
-		JLabel but = new JLabel("Détruisez les blocs pour sauver les animaux !", JLabel.CENTER);
+		JLabel but = new JLabel("Détruisez les blocs pour sauver les étudiants !", JLabel.CENTER);
+		but.setFont(new Font("SansSerif", Font.PLAIN, 20));
 
 		
 		titre.add(logo);
@@ -75,6 +77,7 @@ public class VueGUI extends JFrame implements Visible {
 		
 		
 		JButton startButton = new JButton("start");
+		startButton.addActionListener(event -> {this.choixJoueur();}); // FIXME ça ne marche pas :(
 		JPanel startPanel = new JPanel();
 		startPanel.add(startButton);
 		
@@ -84,7 +87,9 @@ public class VueGUI extends JFrame implements Visible {
 		panel.add(titre);
 		panel.add(startPanel);
 		
-		add(panel);
+		add(panel, "Welcome");
+		
+		
 	}
 
 	@Override
@@ -128,7 +133,11 @@ public class VueGUI extends JFrame implements Visible {
 	 */
 	@Override
 	public String choixJoueur() {
-		// TODO Auto-generated method stub
+		JLabel consigne = new JLabel("Choisissez votre joueur");
+		JPanel panelChoixJoueur = new JPanel();
+		panelChoixJoueur.add(consigne);
+		add(panelChoixJoueur, "choixJoueur");
+		((CardLayout) this.getContentPane().getLayout()).show(this.getContentPane(), "choixJoueur"); // méthode pour afficher une autre "carte" 
 		return null;
 	}
 
