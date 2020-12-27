@@ -1,3 +1,4 @@
+import java.io.IOException;
 
 /**
  * 
@@ -180,6 +181,10 @@ public class Plateau {
 
 	public int getWidth() {
 		return width;
+	}
+	
+	public int getHeight() {
+		return height;
 	}
 	
 	public void jouer() {

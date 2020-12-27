@@ -245,7 +245,7 @@ public class VueText implements Visible {
 	}
 	
 	@Override
-	private void displayLevels() {
+	public void displayLevels() {
 		System.out.println("Niveaux disponibles : ");
 		File levels = new File("../levels/");
 		ArrayList<String> listLevelNames = new ArrayList<String>(); // liste pour stocker noms des niveaux

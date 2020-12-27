@@ -9,15 +9,18 @@ public class Environnement {
 	/**
 	 * Constructeur de l'environnement
 	 * @param vue (text ou graphique)
+	 * @throws IOException 
 	 */
-	public Environnement(Visible vue) {
+	public Environnement(Visible vue) throws IOException {
 		this.vue = vue; // choix de la vue lors de la création de l'environnement
 		this.vue.welcome();
+		
 		String nomJoueur = this.vue.choixJoueur();
 		if (!this.loadJoueur(nomJoueur)) { // si on ne peut pas charger le joueur (sinon ça le charge)
 			this.joueur = new Joueur(nomJoueur); // on en crée un nouveau
 		}
 	}
+
 	
 	/**
 	 * Choix du niveau, reçois int renvoyé par la vue
@@ -32,6 +35,7 @@ public class Environnement {
 	
 	/**
 	 * Méthode qui lance le niveau choix (entré en paramètre)
+	 * @throws IOException 
 	 */
 	public void startniveau() {
 		Plateau plateau = new Plateau(niveau, vue);
@@ -98,7 +102,7 @@ public class Environnement {
 		return this.joueur;
 	}
 		
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Visible vue;
 		if (args.length == 0) { // GUI si pas d'arg
 			vue = new VueGUI();

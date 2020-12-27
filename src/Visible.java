@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 /**
  * Interface avec les fonctions nécessaires pour chacun des vues (texte ou graphique)
  * 
@@ -5,8 +7,9 @@
 public interface Visible {
 	/** 
 	 * Méthode qui affiche le plateau
+	 * @throws IOException 
 	 */
-	public void afficherPlateau();
+	public void afficherPlateau() throws IOException;
 	
 	/**
 	 * méthode qui met à jour le plateau
@@ -31,8 +34,9 @@ public interface Visible {
 	
 	/**
 	 * Affichage à l'accueil du joueur ??
+	 * @throws IOException 
 	 */
-	public void welcome();
+	public void welcome() throws IOException;
 	
 	/**
 	 * permet de choisir le plateau
@@ -46,13 +50,13 @@ public interface Visible {
 	public void exit();
 	
 	/**
-	 * renvoie isGameOver du plateau
+	 * renvoie isWin du plateau
 	 * @return
 	 */
 	public boolean getPlateauWin();
 	
 	/**
-	 * renvoie isWin du plateau
+	 * renvoie isGameOver du plateau
 	 * @return
 	 */
 	public boolean getPlateauGameOver();
@@ -79,6 +83,7 @@ public interface Visible {
 	public String choixJoueur();
 
 	void setJoueur(Joueur joueur); 
+	
 	
 	void displayLevels();
 	
