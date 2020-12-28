@@ -132,7 +132,7 @@ public class Environnement {
 				try {
 					env.save();
 				} catch (IOException e) {
-					System.out.println("impossile de sauvegarder");
+					System.out.println("impossible de sauvegarder");
 				}
 				// si win, on demande choice or next
 				// choice or next = true > choix niveau

@@ -9,7 +9,7 @@ public interface Visible {
 	 * Méthode qui affiche le plateau
 	 * @throws IOException 
 	 */
-	public void afficherPlateau() throws IOException;
+	public void afficherPlateau();
 	
 	/**
 	 * méthode qui met à jour le plateau

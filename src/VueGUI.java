@@ -9,6 +9,9 @@ import java.util.Collections;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 
 public class VueGUI extends JFrame implements Visible {
 	
@@ -39,41 +42,93 @@ public class VueGUI extends JFrame implements Visible {
 	@Override
 	public void afficherPlateau(){
 		
-		GridLayout gridPlateau = new GridLayout(this.plateau.getWidth(), this.plateau.getHeight());
-		JLabel niveau = new JLabel("Niveau " + String.valueOf(this.numNiveau), JLabel.CENTER);
-		niveau.setFont(new Font("SansSerif", Font.PLAIN, 20));
+		Plateau scopePlateau = this.plateau;
+		
+		
+		JPanel all = new JPanel(new BorderLayout());
+
+		GridLayout gridPlateau = new GridLayout(6, 5); //this.plateau.getHeight(), this.plateau.getWidth());
 		
 		JPanel fenetre = new JPanel();
 		fenetre.setLayout(gridPlateau);
-		Color lightblue = new Color(51, 204, 255);
+        Color lightblue = new Color(51, 204, 255);
 		fenetre.setBackground(lightblue);
 		fenetre.setAlignmentX(30);
-		JPanel entete = new JPanel();
-		
-		entete.add(niveau);
-		add(entete, "entête");
 		fenetre.setLocation(20, 20);
-		add(fenetre, "fenetre");
+		Border fborder;
+		fborder = BorderFactory.createLineBorder(Color.green, 20);
+		fenetre.setBorder(fborder);
+		
+		JPanel entete = new JPanel();
+		entete.setBackground(Color.yellow);
+		JLabel niveau = new JLabel("Niveau " + String.valueOf(this.numNiveau), JLabel.CENTER);
+		niveau.setFont(new Font("SansSerif", Font.PLAIN, 20));
+		entete.add(niveau);
+		
+		JPanel leftMenu = new JPanel(new GridLayout(4, 2));
+		leftMenu.setBackground(Color.pink);
+		JLabel joueurX = new JLabel("  Joueur : ");
+		joueurX.setFont(new Font("SansSerif", Font.PLAIN, 20));
+		JLabel joueurY = new JLabel("  " + this.playerName + " ");
+		joueurY.setFont(new Font("SansSerif", Font.PLAIN, 20));
+		leftMenu.add(joueurX);
+		leftMenu.add(joueurY);
+		ImageIcon hammer = new ImageIcon("../images/hammer.png");
+		JButton marteaux = new JButton(hammer);
+		marteaux.setBorderPainted(false);
+        marteaux.setBackground(Color.pink);
+		JLabel nbMarteaux = new JLabel(" " + String.valueOf(this.plateau.getNbMarteaux() + " X"));
+		leftMenu.add(nbMarteaux);
+		leftMenu.add(marteaux);
+		
+		ImageIcon rocket = new ImageIcon("../images/rocket.png");
+		JButton fusees = new JButton(rocket);
+		fusees.setBorderPainted(false);
+        fusees.setBackground(Color.pink);
+		JLabel nbFusees = new JLabel(" " + String.valueOf(this.plateau.getNbFusees()+ " X"));
+		leftMenu.add(nbFusees);
+		leftMenu.add(fusees);
+		
+		ImageIcon coin = new ImageIcon("../images/coin.png");
+		JLabel score = new JLabel(coin);
+		JLabel nbScore = new JLabel(" " + String.valueOf(this.plateau.getScore() + " X"));
+		leftMenu.add(nbScore);
+		leftMenu.add(score);
 		
 		
 		
-		for (int y = 1; y < this.plateau.matriceElements.length - 1; y++) {
-			for (int x = 1; x < this.plateau.matriceElements[0].length - 1; x++) {
+		all.add(entete, BorderLayout.NORTH);
+		all.add(fenetre, BorderLayout.CENTER);
+		all.add(leftMenu, BorderLayout.WEST);
+		
+		this.add(all, "all");
+		
+		
+		
+		
+
+		
+		//for (int y = 1; y < this.plateau.matriceElements.length - 1; y++) {
+		//	for (int x = 1; x < this.plateau.matriceElements[0].length - 1; x++) {
+		for (int y = this.plateau.getHeight()-5; y < this.plateau.matriceElements.length - 1; y++) {
+			for (int x = 1; x < 6; x++) {		
+				
+				
 				if (this.plateau.matriceElements[y][x] == null) {
 					fenetre.add(new JLabel(""));
 				}
 				else {
+					final int xf = x;
+					final int yf = y;
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("/")) {
 						//on crée une image à partir du path et on la met dans un JButton
 						//les 5 lignes d'après servent à enlever le fond et les bords des boutons
 						//pour que seule l'image aparaisse (comme dans un JLabel mais sous forme de bouton).
-						ImageIcon image = new ImageIcon("../images/hammer.png");
+						ImageIcon image = new ImageIcon("../images/rock.png");
 						JButton logo = new JButton(image);
 						logo.setBorderPainted(false);
 	                    logo.setBackground(lightblue);
-	                    logo.setFocusPainted(false);
-	                    logo.setOpaque(true);
-	                    logo.setMargin(new Insets(10, 10, 10, 10));
+	                    logo.setEnabled(false);
 						fenetre.add(logo);
 					}
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("1")) {
@@ -81,9 +136,10 @@ public class VueGUI extends JFrame implements Visible {
 						JButton logo = new JButton(image);
 						logo.setBorderPainted(false);
 						logo.setBackground(lightblue);
-						logo.setFocusPainted(false);
-	                    logo.setOpaque(true);
-	                    logo.setMargin(new Insets(10, 10, 10, 10));
+	                    logo.addActionListener(event -> {
+	                    	this.plateau.destroy(yf, xf);
+	                    	this.afficherPlateau();});
+	                    
 						fenetre.add(logo);
 					}
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("2")) {
@@ -91,9 +147,9 @@ public class VueGUI extends JFrame implements Visible {
 						JButton logo = new JButton(image);
 						logo.setBorderPainted(false);
 						logo.setBackground(lightblue);
-	                    logo.setFocusPainted(false);
-	                    logo.setOpaque(true);
-	                    logo.setMargin(new Insets(10, 10, 10, 10));
+	                    logo.addActionListener(event -> {
+	                    	this.plateau.destroy(yf, xf);
+	                    	this.afficherPlateau();});
 						fenetre.add(logo);
 					}
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("3")) {
@@ -101,9 +157,9 @@ public class VueGUI extends JFrame implements Visible {
 						JButton logo = new JButton(image);
 						logo.setBorderPainted(false);
 						logo.setBackground(lightblue);
-	                    logo.setFocusPainted(false);
-	                    logo.setOpaque(true);
-	                    logo.setMargin(new Insets(10, 10, 10, 10));
+	                    logo.addActionListener(event -> {
+	                    	this.plateau.destroy(yf, xf);
+	                    	this.afficherPlateau();});
 						fenetre.add(logo);
 					}
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("4")) {
@@ -111,9 +167,9 @@ public class VueGUI extends JFrame implements Visible {
 						JButton logo = new JButton(image);
 						logo.setBorderPainted(false);
 						logo.setBackground(lightblue);
-	                    logo.setFocusPainted(false);
-	                    logo.setOpaque(true);
-	                    logo.setMargin(new Insets(10, 10, 10, 10));
+	                    logo.addActionListener(event -> {
+	                    	this.plateau.destroy(yf, xf);
+	                    	this.afficherPlateau();});
 						fenetre.add(logo);
 					}
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("5")) {
@@ -121,14 +177,16 @@ public class VueGUI extends JFrame implements Visible {
 						JButton logo = new JButton(image);
 						logo.setBorderPainted(false);
 						logo.setBackground(lightblue);
-	                    logo.setFocusPainted(false);
-	                    logo.setOpaque(true);
-	                    logo.setMargin(new Insets(10, 10, 10, 10));
+	                    logo.addActionListener(event -> {
+	                    	this.plateau.destroy(yf, xf);
+	                    	this.afficherPlateau();});
 						fenetre.add(logo);
 					}
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("@")) {
 						ImageIcon image = new ImageIcon("../images/monkey.png");
 						JButton logo = new JButton(image);
+						logo.setBorderPainted(false);
+						logo.setBackground(lightblue);
 						fenetre.add(logo);
 					}
 					//else {
@@ -139,9 +197,11 @@ public class VueGUI extends JFrame implements Visible {
 			}
 		}
 		
+		fenetre.setPreferredSize(new Dimension(600, 400));
+        fenetre.setMaximumSize(fenetre.getPreferredSize()); 
+        fenetre.setMinimumSize(fenetre.getPreferredSize());
 		
-		
-		((CardLayout) this.getContentPane().getLayout()).show(this.getContentPane(), "fenetre");
+		((CardLayout) this.getContentPane().getLayout()).show(this.getContentPane(), "all");
 
 	}
 
@@ -167,10 +227,11 @@ public class VueGUI extends JFrame implements Visible {
 	public void welcome() {
 //		this.clear();
 		
+		Color lightblue = new Color(51, 204, 255);
 		
 		// PANEL TITRE
 		JPanel titre = new JPanel();
-		
+		titre.setBackground(lightblue);
 		JLabel titreText = new JLabel("<html>Student<br>Rescue<br>Saga</html>", JLabel.CENTER);
 		titreText.setFont(new Font("SansSerif", Font.BOLD, 60));
 //		titre.setHorizontalAlignment(0);
@@ -188,13 +249,29 @@ public class VueGUI extends JFrame implements Visible {
 
 		
 		
-		JButton startButton = new JButton("start");
+		JButton startButton = new JButton("START");
+		startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		startButton.setPreferredSize(new Dimension(20, 10));
+		startButton.setBackground(lightblue);
+		JButton scores = new JButton("SCORES");
+		scores.setAlignmentX(Component.CENTER_ALIGNMENT);
+		scores.setPreferredSize(new Dimension(20, 10));
+		scores.setBackground(lightblue);
+		JButton help = new JButton("HELP");
+		help.setAlignmentX(Component.CENTER_ALIGNMENT);
+		help.setPreferredSize(new Dimension(20, 10));
+		help.setBackground(lightblue);
 		
 		JPanel startPanel = new JPanel();
+		startPanel.setLayout(new BoxLayout(startPanel, BoxLayout.Y_AXIS));
+		startPanel.setBackground(Color.pink);
 		startPanel.add(startButton);
+		startPanel.add(scores);
+		startPanel.add(help);
 		
 		// PANEL WELCOME
 		JPanel panel = new JPanel(new GridLayout(3,1));
+		panel.setBackground(Color.yellow);
 		panel.add(but);
 		panel.add(titre);
 		panel.add(startPanel);
@@ -247,14 +324,24 @@ public class VueGUI extends JFrame implements Visible {
 	 */
 	@Override
 	public String choixJoueur() {
-		JLabel consigne = new JLabel("Choisissez votre joueur", JLabel.CENTER);
-		JTextField nomJoueur = new JTextField("joueur", JTextField.CENTER);
-		JButton done = new JButton("done");
+		JLabel consigne = new JLabel("<html>Choisissez<br>votre<br>joueur</html>", JLabel.CENTER);
+		consigne.setFont(new Font("SansSerif", Font.BOLD, 40));
+		JTextField nomJoueur = new JTextField("Joueur", JTextField.CENTER);
+		Font font = new Font("SansSerif", Font.BOLD, 20);
+		nomJoueur.setFont(font);
+		nomJoueur.setBackground(new Color(51, 204, 255));
+		nomJoueur.setPreferredSize(new Dimension( 100, 30 ));
+		JButton done = new JButton("START");
+		done.setBackground(new Color(51, 204, 255));
 		
 		JPanel panelChoixJoueur = new JPanel();
-		panelChoixJoueur.add(consigne);
-		panelChoixJoueur.add(nomJoueur);
-		panelChoixJoueur.add(done);
+		panelChoixJoueur.setBackground(Color.pink);
+		JPanel text = new JPanel();
+		text.setBackground(Color.yellow);
+		panelChoixJoueur.add(text, JPanel.BOTTOM_ALIGNMENT);
+		text.add(consigne);
+		text.add(nomJoueur);
+		text.add(done);
 		add(panelChoixJoueur, "choixJoueur");
 		((CardLayout) this.getContentPane().getLayout()).show(this.getContentPane(), "choixJoueur"); // méthode pour afficher une autre "carte" 
 		
@@ -297,12 +384,16 @@ public class VueGUI extends JFrame implements Visible {
 		
 		
 		JLabel niveaux = new JLabel("Choisissez un niveau :", JLabel.CENTER);
-		GridLayout gridNiveaux = new GridLayout(listLevelNames.size(), 0);
+		niveaux.setFont(new Font("SansSerif", Font.BOLD, 40));
+		GridLayout gridNiveaux = new GridLayout(listLevelNames.size()+1, 0);
 		JPanel panelChoixNiveau = new JPanel(gridNiveaux);
+		panelChoixNiveau.setBackground(new Color(51, 204, 255));
 		panelChoixNiveau.add(niveaux);
 		
 		for (String level : listLevelNames) {
 			JButton lev = new JButton(level);
+			lev.setBackground(Color.pink);
+			lev.setOpaque(true);
 			panelChoixNiveau.add(lev);
 			if (!this.joueur.isDebloque(level)) { // si le niveau est bloqué
 				//lev.setEnabled(false); //à remettre pour griser les niveaux bloqués
