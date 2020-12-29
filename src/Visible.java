@@ -5,6 +5,8 @@ import java.io.IOException;
  * 
  */
 public interface Visible {
+
+
 	/** 
 	 * Méthode qui affiche le plateau
 	 * @throws IOException 
@@ -36,7 +38,7 @@ public interface Visible {
 	 * Affichage à l'accueil du joueur ??
 	 * @throws IOException 
 	 */
-	public void welcome() throws IOException;
+	public void welcome();
 	
 	/**
 	 * permet de choisir le plateau
