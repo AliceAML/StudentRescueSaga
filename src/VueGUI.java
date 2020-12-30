@@ -190,7 +190,7 @@ public class VueGUI extends JFrame implements Visible {
 						fenetre.add(logo);
 					}
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("@")) {
-						ImageIcon image = new ImageIcon("../images/monkey.png");
+						ImageIcon image = new ImageIcon("../images/studentf.png");
 						JButton logo = new JButton(image);
 						logo.setBorderPainted(false);
 						logo.setBackground(lightblue);
