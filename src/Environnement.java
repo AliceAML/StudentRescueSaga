@@ -102,38 +102,62 @@ public class Environnement {
 	}
 	
 	public void init() {
+		
+		//lance welcome pour les deux vues
 		this.vue.welcome();
 		String nomJoueur = "";
 		if (vue instanceof VueText) {
+			//avec vueText on peu directement afficher nomJoueur()
 			nomJoueur = this.vue.choixJoueur();
 		}
 		if (vue instanceof VueGUI) {
 			while (((VueGUI) vue).next != true) {
+				//avec vueGUI on attend l'event du bouton start qui change le booleen next.
 				System.out.print("");
 			}
 		}
+		
+		//lance choixJoueur pour les deux vues. 
 		this.vue.choixJoueur();
 		if (vue instanceof VueGUI) {
 			while (((VueGUI) vue).next != true) {
+				//si vueGUI, même opération avec next.
 				System.out.print("");
 			}
 		}
-			
+		//on extrait le nom du joueur assigné à un attribut playerName de l'une des deux vues. 	
 		if (vue instanceof VueGUI) {
 			nomJoueur = ((VueGUI) vue).playerName;
 		}
 		if (vue instanceof VueText) {
 			nomJoueur = ((VueText) vue).playerName;
 		}
-		System.out.println(nomJoueur);
 		
-		
+		// si le joueur n'existe pas encore, on le crée.
 		if (!this.loadJoueur(nomJoueur)) { // si on ne peut pas charger le joueur (sinon ça le charge)
 				this.joueur = new Joueur(nomJoueur); // on en crée un nouveau
+		}
+		// on définit l'attribut joueur de la vue pour pouvoir l'utiliser par la suite.
+		this.vue.setJoueur(this.joueur);
+		
+		//on lance displaylevels pour les deux vues. 
+		this.choixNiveau();
+	
+		
+		
+	}
+	
+	public void game() {
+		this.startniveau();
+		
+		if (this.plateau.isWin()) {
+			this.joueur.update(this.niveau.getNumero(), this.plateau.getScore());
+			try {
+				this.save();
+			} catch (IOException e) {
+				System.out.println("impossible de sauvegarder");
 			}
-		
-		//refaire la même chose pour choix niveaux, etc. 
-		
+		}
 	}
 	
 	

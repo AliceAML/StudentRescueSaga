@@ -16,6 +16,7 @@ public class Main {
 			env = new Environnement(vue);
 		}
 		env.init();
+		env.startniveau();
 		
 	}
 	

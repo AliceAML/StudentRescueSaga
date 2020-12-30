@@ -20,6 +20,10 @@ public class VueGUI extends JFrame implements Visible {
 	public String playerName = "";
 	private int numNiveau;
 	public boolean next = false;
+	public int toDestroyX = 0; public int toDestroyY = 0;
+	public boolean useFusee = false;
+	public boolean useMarteau = false;
+	
 	
 	public VueGUI() {
 		setSize(800, 800);
@@ -44,9 +48,11 @@ public class VueGUI extends JFrame implements Visible {
 	
 	@Override
 	public void afficherPlateau(){
+		this.next = false;
+		this.useFusee = false;
+		this.useMarteau = false;
 		
 		Plateau scopePlateau = this.plateau;
-		
 		
 		JPanel all = new JPanel(new BorderLayout());
 
@@ -58,9 +64,9 @@ public class VueGUI extends JFrame implements Visible {
 		fenetre.setBackground(lightblue);
 		fenetre.setAlignmentX(30);
 		fenetre.setLocation(20, 20);
-		Border fborder;
-		fborder = BorderFactory.createLineBorder(Color.green, 20);
+		Border fborder = BorderFactory.createLineBorder(Color.green, 20);
 		fenetre.setBorder(fborder);
+		
 		
 		JPanel entete = new JPanel();
 		entete.setBackground(Color.yellow);
@@ -80,6 +86,7 @@ public class VueGUI extends JFrame implements Visible {
 		JButton marteaux = new JButton(hammer);
 		marteaux.setBorderPainted(false);
         marteaux.setBackground(Color.pink);
+        marteaux.addActionListener(event -> {this.useMarteau = true;});
 		JLabel nbMarteaux = new JLabel(" " + String.valueOf(this.plateau.getNbMarteaux() + " X"));
 		leftMenu.add(nbMarteaux);
 		leftMenu.add(marteaux);
@@ -88,6 +95,7 @@ public class VueGUI extends JFrame implements Visible {
 		JButton fusees = new JButton(rocket);
 		fusees.setBorderPainted(false);
         fusees.setBackground(Color.pink);
+        fusees.addActionListener(event -> {this.useFusee = true;});
 		JLabel nbFusees = new JLabel(" " + String.valueOf(this.plateau.getNbFusees()+ " X"));
 		leftMenu.add(nbFusees);
 		leftMenu.add(fusees);
@@ -105,11 +113,6 @@ public class VueGUI extends JFrame implements Visible {
 		all.add(leftMenu, BorderLayout.WEST);
 		
 		this.add(all, "all");
-		
-		
-		
-		
-
 		
 		//for (int y = 1; y < this.plateau.matriceElements.length - 1; y++) {
 		//	for (int x = 1; x < this.plateau.matriceElements[0].length - 1; x++) {
@@ -140,8 +143,8 @@ public class VueGUI extends JFrame implements Visible {
 						logo.setBorderPainted(false);
 						logo.setBackground(lightblue);
 	                    logo.addActionListener(event -> {
-	                    	this.plateau.destroy(yf, xf);
-	                    	this.afficherPlateau();});
+	                    	this.toDestroyX = xf; this.toDestroyY = yf;
+	                    	this.next = true;});
 	                    
 						fenetre.add(logo);
 					}
@@ -151,8 +154,9 @@ public class VueGUI extends JFrame implements Visible {
 						logo.setBorderPainted(false);
 						logo.setBackground(lightblue);
 	                    logo.addActionListener(event -> {
-	                    	this.plateau.destroy(yf, xf);
-	                    	this.afficherPlateau();});
+	                    	System.out.println(" " + yf + xf);
+	                    	this.toDestroyX = xf; this.toDestroyY = yf;
+	                    	this.next = true;});
 						fenetre.add(logo);
 					}
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("3")) {
@@ -161,8 +165,8 @@ public class VueGUI extends JFrame implements Visible {
 						logo.setBorderPainted(false);
 						logo.setBackground(lightblue);
 	                    logo.addActionListener(event -> {
-	                    	this.plateau.destroy(yf, xf);
-	                    	this.afficherPlateau();});
+	                    	this.toDestroyX = xf; this.toDestroyY = yf;
+	                    	this.next = true;});
 						fenetre.add(logo);
 					}
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("4")) {
@@ -171,8 +175,8 @@ public class VueGUI extends JFrame implements Visible {
 						logo.setBorderPainted(false);
 						logo.setBackground(lightblue);
 	                    logo.addActionListener(event -> {
-	                    	this.plateau.destroy(yf, xf);
-	                    	this.afficherPlateau();});
+	                    	this.toDestroyX = xf; this.toDestroyY = yf;
+	                    	this.next = true;});
 						fenetre.add(logo);
 					}
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("5")) {
@@ -181,8 +185,8 @@ public class VueGUI extends JFrame implements Visible {
 						logo.setBorderPainted(false);
 						logo.setBackground(lightblue);
 	                    logo.addActionListener(event -> {
-	                    	this.plateau.destroy(yf, xf);
-	                    	this.afficherPlateau();});
+	                    	this.toDestroyX = xf; this.toDestroyY = yf;
+	                    	this.next = true;});
 						fenetre.add(logo);
 					}
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("@")) {
@@ -216,7 +220,27 @@ public class VueGUI extends JFrame implements Visible {
 
 	@Override
 	public void move() {
-		// TODO Auto-generated method stub
+		//tant que rien ne se passe, this.next reste false
+		while (this.next != true) {
+			System.out.print("");
+		}
+		//si la fusée a été cliquée, on destroy la colonne choisie
+		if (this.useFusee == true) {
+			this.plateau.fuseeDestroy(this.toDestroyX);
+		}
+		//si le marteau a été cliqué, on destroy la case choisie. 
+		else if (this.useMarteau == true) {
+			this.plateau.destroy(this.toDestroyY, this.toDestroyX);
+		}
+		//sinon on destroy la case correspondante
+		else if (!this.plateau.isAlone(this.toDestroyY, this.toDestroyX)) {
+			this.plateau.destroy(this.toDestroyY, this.toDestroyX);
+		}
+		
+		
+		
+		
+		
 
 	}
 
@@ -306,6 +330,9 @@ public class VueGUI extends JFrame implements Visible {
 	@Override
 	public int choixNiveau() {
 		this.displayLevels();
+		while (this.next != true) {
+			System.out.print("");
+		}
 		return this.numNiveau;
 	}
 
@@ -419,12 +446,5 @@ public class VueGUI extends JFrame implements Visible {
 		
 		
 		}
-		
-	
-	public static void main(String[] args) throws IOException {
-		VueGUI testVue = new VueGUI();
-		//testVue.setJoueur(new Joueur(choixJoueur()));
-		testVue.welcome();
-	}
 
 }
