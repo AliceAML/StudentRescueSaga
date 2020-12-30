@@ -17,8 +17,9 @@ public class VueGUI extends JFrame implements Visible {
 	
 	private Joueur joueur;
 	private Plateau plateau;
-	private String playerName;
+	public String playerName = "";
 	private int numNiveau;
+	public boolean next = false;
 	
 	public VueGUI() {
 		setSize(800, 800);
@@ -32,6 +33,8 @@ public class VueGUI extends JFrame implements Visible {
 	private void clear() {
 		this.getContentPane().removeAll();
 	}
+	
+	
 	
 	@Override
 	public void setPlateau(Plateau plateau) {
@@ -225,8 +228,7 @@ public class VueGUI extends JFrame implements Visible {
 
 	@Override
 	public void welcome() {
-//		this.clear();
-		
+
 		Color lightblue = new Color(51, 204, 255);
 		
 		// PANEL TITRE
@@ -279,7 +281,7 @@ public class VueGUI extends JFrame implements Visible {
 		add(panel, "Welcome");
 		
 		//cliquer sur start active directement la fonction choixJoueur et ouvre la fenetre correspondante.
-		startButton.addActionListener(event -> {this.choixJoueur();}); // FIXME ça ne marche pas :(
+		startButton.addActionListener(event -> {this.next = true;}); // FIXME ça ne marche pas :(
 		
 	}
 
@@ -303,8 +305,8 @@ public class VueGUI extends JFrame implements Visible {
 
 	@Override
 	public int choixNiveau() {
-		// TODO Auto-generated method stub
-		return 0;
+		this.displayLevels();
+		return this.numNiveau;
 	}
 
 	@Override
@@ -324,6 +326,7 @@ public class VueGUI extends JFrame implements Visible {
 	 */
 	@Override
 	public String choixJoueur() {
+		this.next = false;
 		JLabel consigne = new JLabel("<html>Choisissez<br>votre<br>joueur</html>", JLabel.CENTER);
 		consigne.setFont(new Font("SansSerif", Font.BOLD, 40));
 		JTextField nomJoueur = new JTextField("Joueur", JTextField.CENTER);
@@ -347,16 +350,16 @@ public class VueGUI extends JFrame implements Visible {
 		
 
 		done.addActionListener( e-> {
-			VueGUI.this.playerName = nomJoueur.getText();
-			this.displayLevels();
+			System.out.println(nomJoueur.getText());
+			this.playerName = nomJoueur.getText();
+			this.next = true;
 		});
 
 		//Solution approximative : on assigne this.joueur directement ici
 		//(car c'est le seul endroit où on peut accéder au String du JTextField)
 		//pour ce faire, la classe possède un argument String playerName auquel on peut acceder dans l'expression lambda
 		
-		this.joueur = new Joueur(playerName);
-		return null;
+		return this.playerName;
 		}
 		
 		
@@ -373,7 +376,7 @@ public class VueGUI extends JFrame implements Visible {
 
 	@Override
 	public void displayLevels() {
-				
+		this.next = false;		
 		
 		File levels = new File("../levels/");
 		ArrayList<String> listLevelNames = new ArrayList<String>();
@@ -402,10 +405,11 @@ public class VueGUI extends JFrame implements Visible {
 			//le choix envoie directement la prochaine fenetre (afficherPlateau). 
 			lev.addActionListener( e-> {
 				VueGUI.this.numNiveau = Integer.valueOf(lev.getText());
-				Niveau niveau = new Niveau(numNiveau);
-				this.plateau = new Plateau(niveau, this);
-				setPlateau(this.plateau);
-				this.afficherPlateau();
+				this.next = true;
+				//Niveau niveau = new Niveau(numNiveau);
+				//this.plateau = new Plateau(niveau, this);
+				//setPlateau(this.plateau);
+				//this.afficherPlateau();
 			});
 			}
 		

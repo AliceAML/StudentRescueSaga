@@ -6,6 +6,7 @@ import java.util.Scanner;
 public class VueText implements Visible {
 	
 	private Plateau plateau;
+	public String playerName = "";
 	private Joueur joueur;
 	
 	String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -227,7 +228,6 @@ public class VueText implements Visible {
 				"\n" + 
 				"");
 		System.out.println("Détruisez tous les blocs de chiffres \npour faire tomber les @ en bas du plateau !\n");
-		
 	}
 
 	@Override
@@ -319,6 +319,7 @@ public class VueText implements Visible {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Nom du joueur·euse ?");
 		String nom = sc.next();
+		this.playerName = nom;
 		return nom;
 	}
 }

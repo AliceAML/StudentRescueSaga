@@ -13,12 +13,11 @@ public class Environnement {
 	 */
 	public Environnement(Visible vue) throws IOException {
 		this.vue = vue; // choix de la vue lors de la création de l'environnement
-		this.vue.welcome();
 		
-		String nomJoueur = this.vue.choixJoueur();
-		if (!this.loadJoueur(nomJoueur)) { // si on ne peut pas charger le joueur (sinon ça le charge)
-			this.joueur = new Joueur(nomJoueur); // on en crée un nouveau
-		}
+//		String nomJoueur = this.vue.choixJoueur();
+//		if (!this.loadJoueur(nomJoueur)) { // si on ne peut pas charger le joueur (sinon ça le charge)
+//			this.joueur = new Joueur(nomJoueur); // on en crée un nouveau
+//		}
 	}
 
 	
@@ -101,8 +100,45 @@ public class Environnement {
 	public Joueur getJoueur() {
 		return this.joueur;
 	}
+	
+	public void init() {
+		this.vue.welcome();
+		String nomJoueur = "";
+		if (vue instanceof VueText) {
+			nomJoueur = this.vue.choixJoueur();
+		}
+		if (vue instanceof VueGUI) {
+			while (((VueGUI) vue).next != true) {
+				System.out.print("");
+			}
+		}
+		this.vue.choixJoueur();
+		if (vue instanceof VueGUI) {
+			while (((VueGUI) vue).next != true) {
+				System.out.print("");
+			}
+		}
+			
+		if (vue instanceof VueGUI) {
+			nomJoueur = ((VueGUI) vue).playerName;
+		}
+		if (vue instanceof VueText) {
+			nomJoueur = ((VueText) vue).playerName;
+		}
+		System.out.println(nomJoueur);
 		
-	public static void main(String[] args) throws IOException {
+		
+		if (!this.loadJoueur(nomJoueur)) { // si on ne peut pas charger le joueur (sinon ça le charge)
+				this.joueur = new Joueur(nomJoueur); // on en crée un nouveau
+			}
+		
+		//refaire la même chose pour choix niveaux, etc. 
+		
+	}
+	
+	
+	
+/*	public static void main(String[] args) throws IOException {
 		Visible vue;
 		if (args.length == 0) { // GUI si pas d'arg
 			vue = new VueGUI();
@@ -147,5 +183,5 @@ public class Environnement {
 				}
 			}
 		}
-	}
+	}*/
 }
