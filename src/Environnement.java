@@ -13,11 +13,6 @@ public class Environnement {
 	 */
 	public Environnement(Visible vue) throws IOException {
 		this.vue = vue; // choix de la vue lors de la création de l'environnement
-		
-//		String nomJoueur = this.vue.choixJoueur();
-//		if (!this.loadJoueur(nomJoueur)) { // si on ne peut pas charger le joueur (sinon ça le charge)
-//			this.joueur = new Joueur(nomJoueur); // on en crée un nouveau
-//		}
 	}
 
 	
@@ -25,7 +20,7 @@ public class Environnement {
 	 * Choix du niveau, reçois int renvoyé par la vue
 	 * @return
 	 */
-	private Niveau choixNiveau() {
+	public Niveau choixNiveau() {
 		int n = this.vue.choixNiveau();
 		Niveau niveau = new Niveau(n);
 		this.niveau = niveau;
@@ -70,7 +65,7 @@ public class Environnement {
 		return false;
 	}
 	
-	private void save() throws IOException {
+	public void save() throws IOException {
 		FileOutputStream fileOut = new FileOutputStream("../sauvegardes/" + this.joueur.getNom().toLowerCase() + ".ser");
 	    ObjectOutputStream out = new ObjectOutputStream(fileOut);
 	    out.writeObject(this.joueur);
@@ -106,10 +101,6 @@ public class Environnement {
 		//lance welcome pour les deux vues
 		this.vue.welcome();
 		String nomJoueur = "";
-		if (vue instanceof VueText) {
-			//avec vueText on peu directement afficher nomJoueur()
-			nomJoueur = this.vue.choixJoueur();
-		}
 		if (vue instanceof VueGUI) {
 			while (((VueGUI) vue).next != true) {
 				//avec vueGUI on attend l'event du bouton start qui change le booleen next.
@@ -126,12 +117,7 @@ public class Environnement {
 			}
 		}
 		//on extrait le nom du joueur assigné à un attribut playerName de l'une des deux vues. 	
-		if (vue instanceof VueGUI) {
-			nomJoueur = ((VueGUI) vue).playerName;
-		}
-		if (vue instanceof VueText) {
-			nomJoueur = ((VueText) vue).playerName;
-		}
+		nomJoueur = vue.getPlayerName();
 		
 		// si le joueur n'existe pas encore, on le crée.
 		if (!this.loadJoueur(nomJoueur)) { // si on ne peut pas charger le joueur (sinon ça le charge)
@@ -142,7 +128,8 @@ public class Environnement {
 		
 		//on lance displaylevels pour les deux vues. 
 		this.choixNiveau();
-	
+		
+		
 		
 		
 	}

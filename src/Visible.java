@@ -89,5 +89,7 @@ public interface Visible {
 	
 	void displayLevels();
 	
+	String getPlayerName();
+	
 
 }

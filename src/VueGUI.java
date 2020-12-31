@@ -19,7 +19,7 @@ public class VueGUI extends JFrame implements Visible {
 	private Plateau plateau;
 	public String playerName = "";
 	private int numNiveau;
-	public boolean next = false;
+	public boolean next = false; // booléen qui sert à "bloquer" l'avancement de l'affichage. Se débloque quand l'utilisateur clique sur un bouton.
 	public int toDestroyX = 0; public int toDestroyY = 0;
 	public boolean useFusee = false;
 	public boolean useMarteau = false;
@@ -27,7 +27,7 @@ public class VueGUI extends JFrame implements Visible {
 	
 	public VueGUI() {
 		setSize(800, 800);
-		setTitle("Pet Rescue Saga");
+		setTitle("Student Rescue Saga");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		setLayout(new CardLayout());
@@ -43,6 +43,7 @@ public class VueGUI extends JFrame implements Visible {
 	@Override
 	public void setPlateau(Plateau plateau) {
 		this.plateau = plateau;
+		this.numNiveau = this.plateau.getNiveau().getNumero();
 
 	}
 	
@@ -116,6 +117,8 @@ public class VueGUI extends JFrame implements Visible {
 		
 		//for (int y = 1; y < this.plateau.matriceElements.length - 1; y++) {
 		//	for (int x = 1; x < this.plateau.matriceElements[0].length - 1; x++) {
+		
+
 		for (int y = this.plateau.getHeight()-5; y < this.plateau.matriceElements.length - 1; y++) {
 			for (int x = 1; x < 6; x++) {		
 				
@@ -344,7 +347,49 @@ public class VueGUI extends JFrame implements Visible {
 
 	@Override
 	public boolean choiceOrNext() {
-		// TODO Auto-generated method stub
+		System.out.println("Choiceornext GUI");
+		this.next = false;
+		
+		
+
+		JLabel score = new JLabel(Integer.toString(this.plateau.getScore()));
+		score.setFont(new Font("SansSerif", Font.BOLD, 40));
+
+		JLabel consigne = new JLabel("Voulez-vous choisir un autre niveau ou passer au niveau suivant ?", JLabel.CENTER);
+		consigne.setFont(new Font("SansSerif", Font.BOLD, 20));
+		
+		JPanel text = new JPanel(new GridLayout(3,1));
+		text.add(score);
+		text.add(consigne);
+		
+		JPanel buttons = new JPanel();
+		
+		JButton choice = new JButton("New");
+		JButton next = new JButton("Next");
+		
+		buttons.add(choice);
+		buttons.add(next);
+		
+		text.add(buttons);
+		
+		JPanel choicePanel = new JPanel();
+		
+		choicePanel.add(text);
+		
+		add(choicePanel, "choiceorNext");
+		((CardLayout) this.getContentPane().getLayout()).show(this.getContentPane(), "choiceorNext"); // méthode pour afficher une autre "carte" 
+		
+		while (this.next != true) {
+			System.out.print("");
+		}
+
+		
+		choice.addActionListener( e-> {
+			this.next = true;
+		});
+		
+		
+		
 		return false;
 	}
 	
@@ -354,6 +399,7 @@ public class VueGUI extends JFrame implements Visible {
 	@Override
 	public String choixJoueur() {
 		this.next = false;
+		
 		JLabel consigne = new JLabel("<html>Choisissez<br>votre<br>joueur</html>", JLabel.CENTER);
 		consigne.setFont(new Font("SansSerif", Font.BOLD, 40));
 		JTextField nomJoueur = new JTextField("Joueur", JTextField.CENTER);
@@ -421,12 +467,15 @@ public class VueGUI extends JFrame implements Visible {
 		panelChoixNiveau.add(niveaux);
 		
 		for (String level : listLevelNames) {
+			if (this.joueur.isDebloque(level)) {
+				
+			}
 			JButton lev = new JButton(level);
 			lev.setBackground(Color.pink);
 			lev.setOpaque(true);
 			panelChoixNiveau.add(lev);
 			if (!this.joueur.isDebloque(level)) { // si le niveau est bloqué
-				//lev.setEnabled(false); //à remettre pour griser les niveaux bloqués
+				lev.setEnabled(false); //à remettre pour griser les niveaux bloqués
 			}
 			//ici, on crée le plateau correspondant au numéro du niveau que l'on obtient.
 			//le choix envoie directement la prochaine fenetre (afficherPlateau). 
@@ -446,5 +495,11 @@ public class VueGUI extends JFrame implements Visible {
 		
 		
 		}
+
+	@Override
+	public String getPlayerName() {
+		// TODO Auto-generated method stub
+		return this.playerName;
+	}
 
 }

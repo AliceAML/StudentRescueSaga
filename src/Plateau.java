@@ -25,7 +25,7 @@ public class Plateau {
 	 */
 	public Plateau(Niveau niveau, Visible vue) {
 		
-		this.niveau = niveau;
+		this.setNiveau(niveau);
 		this.width = niveau.getMatrice()[0].length;
 		this.height = niveau.getMatrice().length;
 		this.vue = vue;
@@ -214,7 +214,7 @@ public class Plateau {
 	 * + 1000 points par animal sauvé
 	 */
 	private void updateScore() {
-		this.score = (this.boitesDetruites*this.boitesDetruites*10) + (this.niveau.getAnimauxASauver() - this.animauxRestants)*1000;
+		this.score = (this.boitesDetruites*this.boitesDetruites*10) + (this.getNiveau().getAnimauxASauver() - this.animauxRestants)*1000;
 	}
 	
 	public int getScore() {
@@ -267,6 +267,14 @@ public class Plateau {
 			return true;
 		}
 		return false;
+	}
+
+	public Niveau getNiveau() {
+		return niveau;
+	}
+
+	public void setNiveau(Niveau niveau) {
+		this.niveau = niveau;
 	}
 	
 }

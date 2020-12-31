@@ -192,7 +192,7 @@ public class VueText implements Visible {
 				" / _  / / -_) / /   / _ \\\n" + 
 				"/_//_/  \\__/ /_/   / .__/\n" + 
 				"                  /_/   ");
-		System.out.println("Obejctif : Il faut détruire les blocs de chiffres \npour faire descendre les @.\n"); // TODO compléter l'aide
+		System.out.println("Objectif : Il faut détruire les blocs de chiffres \npour faire descendre les @.\n"); // TODO compléter l'aide
 		System.out.println("Pour détruire un bloc et les blocs adjacents de la même couleur,\n taper les coordonnées \"A5"
 				+ "\"");
 		System.out.println("Pour utiliser la fusée qui détruit une colonne, "
@@ -321,5 +321,9 @@ public class VueText implements Visible {
 		String nom = sc.next();
 		this.playerName = nom;
 		return nom;
+	}
+	@Override
+	public String getPlayerName() {
+		return this.playerName;
 	}
 }
