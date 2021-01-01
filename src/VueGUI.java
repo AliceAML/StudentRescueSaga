@@ -1,17 +1,11 @@
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
+
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 
 public class VueGUI extends JFrame implements Visible {
 	
@@ -23,7 +17,7 @@ public class VueGUI extends JFrame implements Visible {
 	public int toDestroyX = 0; public int toDestroyY = 0;
 	public boolean useFusee = false;
 	public boolean useMarteau = false;
-	
+	public boolean choiceOrNext = false;
 	
 	public VueGUI() {
 		setSize(800, 800);
@@ -295,7 +289,7 @@ public class VueGUI extends JFrame implements Visible {
 		startPanel.setLayout(new BoxLayout(startPanel, BoxLayout.Y_AXIS));
 		startPanel.setBackground(Color.pink);
 		startPanel.add(startButton);
-		startPanel.add(scores);
+//		startPanel.add(scores);
 		startPanel.add(help);
 		
 		// PANEL WELCOME
@@ -347,50 +341,76 @@ public class VueGUI extends JFrame implements Visible {
 
 	@Override
 	public boolean choiceOrNext() {
-		System.out.println("Choiceornext GUI");
 		this.next = false;
 		
+		JLabel niveau = new JLabel("Niveau " + Integer.toString(this.numNiveau), JLabel.CENTER);
+		niveau.setFont(new Font("SansSerif", Font.BOLD, 30));
 		
-
-		JLabel score = new JLabel(Integer.toString(this.plateau.getScore()));
+		JLabel titre = new JLabel("SCORE", JLabel.CENTER);
+		titre.setFont(new Font("SansSerif", Font.BOLD, 20));
+	
+		
+		JLabel score = new JLabel(Integer.toString(this.plateau.getScore()), JLabel.CENTER);
 		score.setFont(new Font("SansSerif", Font.BOLD, 40));
-
-		JLabel consigne = new JLabel("Voulez-vous choisir un autre niveau ou passer au niveau suivant ?", JLabel.CENTER);
-		consigne.setFont(new Font("SansSerif", Font.BOLD, 20));
 		
-		JPanel text = new JPanel(new GridLayout(3,1));
+		int best = this.joueur.getScore(this.numNiveau);
+		JLabel meilleurScore;
+		if (this.plateau.getScore() > best) {
+			meilleurScore = new JLabel("Bravo, vous avez battu votre record ! " + Integer.toString(best), JLabel.CENTER);
+		}
+		else {
+			meilleurScore = new JLabel("C'est en dessous de votre meilleur score : " + Integer.toString(best), JLabel.CENTER);
+		}
+
+
+		JPanel text = new JPanel(new GridLayout(5,1));
+		text.add(niveau);
+		text.add(titre);
 		text.add(score);
-		text.add(consigne);
+		text.add(meilleurScore);
 		
 		JPanel buttons = new JPanel();
 		
-		JButton choice = new JButton("New");
-		JButton next = new JButton("Next");
+		JButton choice = new JButton("Revenir au menu");
+		JButton next = new JButton("Niveau suivant");
 		
 		buttons.add(choice);
 		buttons.add(next);
 		
+		choice.setBackground(new Color(51, 204, 255));
+		next.setBackground(Color.pink);
+
+
 		text.add(buttons);
 		
-		JPanel choicePanel = new JPanel();
+		text.setBackground(Color.yellow);
 		
-		choicePanel.add(text);
+		buttons.setBackground(Color.yellow);
+
+		
+		JPanel choicePanel = new JPanel(new BorderLayout());
+		
+		choicePanel.add(text, BorderLayout.CENTER);
 		
 		add(choicePanel, "choiceorNext");
 		((CardLayout) this.getContentPane().getLayout()).show(this.getContentPane(), "choiceorNext"); // méthode pour afficher une autre "carte" 
+	
+		
+		choice.addActionListener( e-> {
+			this.choiceOrNext = true;
+			this.next = true;
+		});
+		
+		next.addActionListener( e-> {
+			this.choiceOrNext = false;
+			this.next = true;
+		});
 		
 		while (this.next != true) {
 			System.out.print("");
 		}
-
 		
-		choice.addActionListener( e-> {
-			this.next = true;
-		});
-		
-		
-		
-		return false;
+		return this.choiceOrNext;
 	}
 	
 	/**
@@ -467,9 +487,6 @@ public class VueGUI extends JFrame implements Visible {
 		panelChoixNiveau.add(niveaux);
 		
 		for (String level : listLevelNames) {
-			if (this.joueur.isDebloque(level)) {
-				
-			}
 			JButton lev = new JButton(level);
 			lev.setBackground(Color.pink);
 			lev.setOpaque(true);
