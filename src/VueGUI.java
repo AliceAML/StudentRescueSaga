@@ -355,8 +355,8 @@ public class VueGUI extends JFrame implements Visible {
 		
 		int best = this.joueur.getScore(this.numNiveau);
 		JLabel meilleurScore;
-		if (this.plateau.getScore() > best) {
-			meilleurScore = new JLabel("Bravo, vous avez battu votre record ! " + Integer.toString(best), JLabel.CENTER);
+		if (this.plateau.getScore() >= best) {
+			meilleurScore = new JLabel("Bravo, c'est votre meilleur score ! " + Integer.toString(best), JLabel.CENTER);
 		}
 		else {
 			meilleurScore = new JLabel("C'est en dessous de votre meilleur score : " + Integer.toString(best), JLabel.CENTER);
