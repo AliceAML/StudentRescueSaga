@@ -267,7 +267,7 @@ public class VueGUI extends JFrame implements Visible {
 		titre.add(logo);
 		titre.add(titreText);
 	
-		JLabel but = new JLabel("Détruisez les blocs pour sauver les étudiants !", JLabel.CENTER);
+		JLabel but = new JLabel("Détruis les virus pour sauver les étudiants !", JLabel.CENTER);
 		but.setFont(new Font("SansSerif", Font.PLAIN, 20));
 
 		

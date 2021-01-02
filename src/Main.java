@@ -4,25 +4,24 @@ import java.util.Scanner;
 public class Main {
 
 	public static void main(String[] args) throws IOException {
-		System.out.println("Choisir une version du jeu : \n Vue textuelle ('1') Vue Graphique ('2')");
+		
 		Environnement env = new Environnement(null);
 		int choix;
+		
 		if (args.length > 0) {
 			choix = Integer.parseInt(args[0]);
 		}
 		else {
+			System.out.println("Choisir une version du jeu : \n Vue textuelle ('1') Vue Graphique ('2')");
 			Scanner sc = new Scanner(System.in);
 			choix = sc.nextInt();
 			sc.close();
 		}
 		if (choix == 2) {
-			System.out.println("vue graphique");
-
 			VueGUI vue = new VueGUI();
 			env = new Environnement(vue);
 		}
 		else if (choix == 1) {
-			System.out.println("vue textuelle");
 			VueText vue = new VueText();
 			env = new Environnement(vue);
 		}
