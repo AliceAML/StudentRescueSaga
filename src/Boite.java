@@ -5,7 +5,6 @@
  */
 public class Boite extends Element {
 	private int couleur;
-	Plateau plateau;
 
 	public Boite(int couleur) {
 		this.couleur = couleur;

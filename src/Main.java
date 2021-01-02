@@ -5,9 +5,16 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 		System.out.println("Choisir une version du jeu : \n Vue textuelle ('1') Vue Graphique ('2')");
-		Scanner sc = new Scanner(System.in);
 		Environnement env = new Environnement(null);
-		int choix = sc.nextInt();
+		int choix;
+		if (args.length > 0) {
+			choix = Integer.parseInt(args[0]);
+		}
+		else {
+			Scanner sc = new Scanner(System.in);
+			choix = sc.nextInt();
+			sc.close();
+		}
 		if (choix == 2) {
 			System.out.println("vue graphique");
 
