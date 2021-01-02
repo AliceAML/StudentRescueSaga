@@ -72,11 +72,6 @@ public class VueText implements Visible {
 		
 	}
 
-	@Override
-	public void miseAjourPlateau() {
-		this.afficherPlateau(); // mise à jour = nouvel affichage
-		
-	}
 
 
 	@Override
@@ -205,7 +200,6 @@ public class VueText implements Visible {
 		System.out.println("\nAppuyer sur entrée pour reprendre le jeu");
 		Scanner sc = new Scanner(System.in);
 		sc.nextLine();
-//		sc.close(); // FIXME si je close ça fait buguer move !
 		
 	}
 
@@ -273,7 +267,7 @@ public class VueText implements Visible {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Choisissez un niveau : "); // TODO affichage + interaction à bouger dans vue
 		int n = sc.nextInt();
-//		sc.close(); // FIXME pourquoi ne peut-on pas fermer le scanner ? ça case jouer()
+
 		return n;
 	}
 

@@ -209,11 +209,6 @@ public class VueGUI extends JFrame implements Visible {
 
 	}
 
-	@Override
-	public void miseAjourPlateau() {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void move() {

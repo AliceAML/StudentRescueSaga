@@ -15,7 +15,6 @@ public class Main {
 			System.out.println("Choisir une version du jeu : \n Vue textuelle ('1') Vue Graphique ('2')");
 			Scanner sc = new Scanner(System.in);
 			choix = sc.nextInt();
-			sc.close();
 		}
 		if (choix == 2) {
 			VueGUI vue = new VueGUI();

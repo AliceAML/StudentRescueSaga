@@ -13,10 +13,6 @@ public interface Visible {
 	 */
 	public void afficherPlateau();
 	
-	/**
-	 * méthode qui met à jour le plateau
-	 */
-	public void miseAjourPlateau();
 	
 	/**
 	 * méthode qui affiche l'environnement
