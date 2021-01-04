@@ -14,8 +14,8 @@ public class VueGUI extends JFrame implements Visible {
 	public String playerName = "";
 	private int numNiveau;
 	public boolean next = false; // booléen qui sert à "bloquer" l'avancement de l'affichage. Se débloque quand l'utilisateur clique sur un bouton.
-	public int toDestroyX = 0; public int toDestroyY = 0;
-	public boolean useFusee = false;
+	public int toDestroyX = 0; public int toDestroyY = 0; //pour sauvegarder les valeurs des coordonnées à détruire.
+	public boolean useFusee = false; //boolen coup spécial fusée
 	public boolean useMarteau = false;
 	public boolean choiceOrNext = false;
 	
@@ -47,12 +47,13 @@ public class VueGUI extends JFrame implements Visible {
 		this.useFusee = false;
 		this.useMarteau = false;
 		
-		Plateau scopePlateau = this.plateau;
-		
+		//premier JPanel qui contiendra le tout
 		JPanel all = new JPanel(new BorderLayout());
-
-		GridLayout gridPlateau = new GridLayout(6, 5); //this.plateau.getHeight(), this.plateau.getWidth());
 		
+		//plateau en lui même : de hauteur 6 et de largeur 5 car on n'affiche pas l'intégralité du plateau.
+		GridLayout gridPlateau = new GridLayout(6, 5); 
+		
+		//fenetre va contenir le plateau représenté par gridPlateau
 		JPanel fenetre = new JPanel();
 		fenetre.setLayout(gridPlateau);
         Color lightblue = new Color(51, 204, 255);
@@ -62,13 +63,14 @@ public class VueGUI extends JFrame implements Visible {
 		Border fborder = BorderFactory.createLineBorder(Color.green, 20);
 		fenetre.setBorder(fborder);
 		
-		
+		//entête sert uniquement à afficher le numéro du niveau
 		JPanel entete = new JPanel();
 		entete.setBackground(Color.yellow);
 		JLabel niveau = new JLabel("Niveau " + String.valueOf(this.numNiveau), JLabel.CENTER);
 		niveau.setFont(new Font("SansSerif", Font.PLAIN, 20));
 		entete.add(niveau);
 		
+		//leftMenu contiendra toutes les informations necessaires + les boutons attribués aux coups spéciaux 
 		JPanel leftMenu = new JPanel(new GridLayout(4, 2));
 		leftMenu.setBackground(Color.pink);
 		JLabel joueurX = new JLabel("  Joueur : ");
@@ -77,15 +79,17 @@ public class VueGUI extends JFrame implements Visible {
 		joueurY.setFont(new Font("SansSerif", Font.PLAIN, 20));
 		leftMenu.add(joueurX);
 		leftMenu.add(joueurY);
+		//bouton à cliquer pour utiliser le marteau :
 		ImageIcon hammer = new ImageIcon("../images/hammer.png");
 		JButton marteaux = new JButton(hammer);
 		marteaux.setBorderPainted(false);
         marteaux.setBackground(Color.pink);
+        //l'event permet uniquement de passer le booleen useMarteau à true pour envoyer l'information à l'environnement. 
         marteaux.addActionListener(event -> {this.useMarteau = true;});
 		JLabel nbMarteaux = new JLabel(" " + String.valueOf(this.plateau.getNbMarteaux() + " X"));
 		leftMenu.add(nbMarteaux);
 		leftMenu.add(marteaux);
-		
+		//bouton à cliquer pour utiliser la fusée.
 		ImageIcon rocket = new ImageIcon("../images/rocket.png");
 		JButton fusees = new JButton(rocket);
 		fusees.setBorderPainted(false);
@@ -94,7 +98,7 @@ public class VueGUI extends JFrame implements Visible {
 		JLabel nbFusees = new JLabel(" " + String.valueOf(this.plateau.getNbFusees()+ " X"));
 		leftMenu.add(nbFusees);
 		leftMenu.add(fusees);
-		
+		//représentation du score :
 		ImageIcon coin = new ImageIcon("../images/coin.png");
 		JLabel score = new JLabel(coin);
 		JLabel nbScore = new JLabel(" " + String.valueOf(this.plateau.getScore() + " X"));
@@ -102,27 +106,30 @@ public class VueGUI extends JFrame implements Visible {
 		leftMenu.add(score);
 		
 		
-		
 		all.add(entete, BorderLayout.NORTH);
 		all.add(fenetre, BorderLayout.CENTER);
 		all.add(leftMenu, BorderLayout.WEST);
-		
 		this.add(all, "all");
 		
-		//for (int y = 1; y < this.plateau.matriceElements.length - 1; y++) {
-		//	for (int x = 1; x < this.plateau.matriceElements[0].length - 1; x++) {
-		
+		/*
+		 * Cette seconde partie de la fonction sert à remplire "fenetre" et "gridPlateau" avec les boutons correspondant aux cases.
+		 * Chaque bouton contient une image selon la couleur de la case et est clicable ou non.
+		 * Leurs actionListeners mettent à jour les coordonnées de la case à détruire + le booleen next.
+		 */
 
 		for (int y = this.plateau.getHeight()-5; y < this.plateau.matriceElements.length - 1; y++) {
 			for (int x = 1; x < 6; x++) {		
 				
-				
+				//ajout des cases vides
 				if (this.plateau.matriceElements[y][x] == null) {
 					fenetre.add(new JLabel(""));
 				}
+				//ajout des cases normales :
 				else {
+					//on passe les variables x et y en final pour pouvoir y acceder dans nos expressions lambda.
 					final int xf = x;
 					final int yf = y;
+					//case fixe (obstacle) avec image de caillou.
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("/")) {
 						//on crée une image à partir du path et on la met dans un JButton
 						//les 5 lignes d'après servent à enlever le fond et les bords des boutons
@@ -134,6 +141,7 @@ public class VueGUI extends JFrame implements Visible {
 	                    logo.setEnabled(false);
 						fenetre.add(logo);
 					}
+					//case bleue
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("1")) {
 						ImageIcon image = new ImageIcon("../images/virus_navy.png");
 						JButton logo = new JButton(image);
@@ -145,6 +153,7 @@ public class VueGUI extends JFrame implements Visible {
 	                    
 						fenetre.add(logo);
 					}
+					//case verte
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("2")) {
 						ImageIcon image = new ImageIcon("../images/virus_green.png");
 						JButton logo = new JButton(image);
@@ -156,6 +165,7 @@ public class VueGUI extends JFrame implements Visible {
 	                    	this.next = true;});
 						fenetre.add(logo);
 					}
+					//case jaune
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("3")) {
 						ImageIcon image = new ImageIcon("../images/virus_yellow.png");
 						JButton logo = new JButton(image);
@@ -166,6 +176,7 @@ public class VueGUI extends JFrame implements Visible {
 	                    	this.next = true;});
 						fenetre.add(logo);
 					}
+					//case violette
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("4")) {
 						ImageIcon image = new ImageIcon("../images/virus_purple.png");
 						JButton logo = new JButton(image);
@@ -176,6 +187,7 @@ public class VueGUI extends JFrame implements Visible {
 	                    	this.next = true;});
 						fenetre.add(logo);
 					}
+					//case rouge
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("5")) {
 						ImageIcon image = new ImageIcon("../images/virus_red.png");
 						JButton logo = new JButton(image);
@@ -186,6 +198,7 @@ public class VueGUI extends JFrame implements Visible {
 	                    	this.next = true;});
 						fenetre.add(logo);
 					}
+					//case "animal" représentée par un étudiant. Ne peut pas être cliquée.
 					if (this.plateau.matriceElements[y][x].toString().contentEquals("@")) {
 						ImageIcon image = new ImageIcon("../images/studentf.png");
 						JButton logo = new JButton(image);
@@ -193,14 +206,10 @@ public class VueGUI extends JFrame implements Visible {
 						logo.setBackground(lightblue);
 						fenetre.add(logo);
 					}
-					//else {
-					//	fenetre.add(new JLabel(this.plateau.matriceElements[y][x].toString()));
-					//}
-					
 				}
 			}
 		}
-		
+		//on ajoute enfin le plateau et on appelle le cardlayout qui permet de changer de fenetre.
 		fenetre.setPreferredSize(new Dimension(600, 400));
         fenetre.setMaximumSize(fenetre.getPreferredSize()); 
         fenetre.setMinimumSize(fenetre.getPreferredSize());
@@ -224,7 +233,7 @@ public class VueGUI extends JFrame implements Visible {
 		else if (this.useMarteau == true) {
 			this.plateau.destroy(this.toDestroyY, this.toDestroyX);
 		}
-		//sinon on destroy la case correspondante
+		//sinon on destroy normalement la case choisie.
 		else if (!this.plateau.isAlone(this.toDestroyY, this.toDestroyX)) {
 			this.plateau.destroy(this.toDestroyY, this.toDestroyX);
 		}
@@ -239,25 +248,24 @@ public class VueGUI extends JFrame implements Visible {
 	@Override
 	public void help() {
 		// TODO Auto-generated method stub
-
+		// il faut l'associer au bouton help de welcome mais il faudrait également créer une nouvelle fenêtre. 
+		
 	}
 
+	//affiche la première fenetre.
 	@Override
 	public void welcome() {
 
 		Color lightblue = new Color(51, 204, 255);
 		
-		// PANEL TITRE
+		//PANEL TITRE
 		JPanel titre = new JPanel();
 		titre.setBackground(lightblue);
 		JLabel titreText = new JLabel("<html>Student<br>Rescue<br>Saga</html>", JLabel.CENTER);
 		titreText.setFont(new Font("SansSerif", Font.BOLD, 60));
-//		titre.setHorizontalAlignment(0);
 				
 		ImageIcon image = new ImageIcon("../images/student.png");
 		JLabel logo = new JLabel(image, JLabel.CENTER);
-		
-		titre.add(logo);
 		
 		titre.add(logo);
 		titre.add(titreText);
@@ -266,15 +274,12 @@ public class VueGUI extends JFrame implements Visible {
 		but.setFont(new Font("SansSerif", Font.PLAIN, 20));
 
 		
-		
+		//les seuls éléments clicables sont le bouton start et help.
 		JButton startButton = new JButton("START");
 		startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		startButton.setPreferredSize(new Dimension(20, 10));
 		startButton.setBackground(lightblue);
-		JButton scores = new JButton("SCORES");
-		scores.setAlignmentX(Component.CENTER_ALIGNMENT);
-		scores.setPreferredSize(new Dimension(20, 10));
-		scores.setBackground(lightblue);
+
 		JButton help = new JButton("HELP");
 		help.setAlignmentX(Component.CENTER_ALIGNMENT);
 		help.setPreferredSize(new Dimension(20, 10));
@@ -284,10 +289,9 @@ public class VueGUI extends JFrame implements Visible {
 		startPanel.setLayout(new BoxLayout(startPanel, BoxLayout.Y_AXIS));
 		startPanel.setBackground(Color.pink);
 		startPanel.add(startButton);
-//		startPanel.add(scores);
 		startPanel.add(help);
 		
-		// PANEL WELCOME
+		//panel global
 		JPanel panel = new JPanel(new GridLayout(3,1));
 		panel.setBackground(Color.yellow);
 		panel.add(but);
@@ -296,15 +300,14 @@ public class VueGUI extends JFrame implements Visible {
 		
 		add(panel, "Welcome");
 		
-		//cliquer sur start active directement la fonction choixJoueur et ouvre la fenetre correspondante.
-		startButton.addActionListener(event -> {this.next = true;}); // FIXME ça ne marche pas :(
+		//le bouton start fait passer next a true pour que l'environnement puisse continuer ses tâches.
+		startButton.addActionListener(event -> {this.next = true;});
 		
 	}
 
 	@Override
 	public void exit() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -413,8 +416,12 @@ public class VueGUI extends JFrame implements Visible {
 	 */
 	@Override
 	public String choixJoueur() {
+		//on initialise toujours next à false
 		this.next = false;
 		
+		//On insière dans un JPanel "panelChoixJoueur" :
+		//- un Jpanel text contenant les informations et la saisie du texte
+		//- un bouton done qui fait passer next à true 
 		JLabel consigne = new JLabel("<html>Choisissez<br>votre<br>joueur</html>", JLabel.CENTER);
 		consigne.setFont(new Font("SansSerif", Font.BOLD, 40));
 		JTextField nomJoueur = new JTextField("Joueur", JTextField.CENTER);
@@ -436,17 +443,12 @@ public class VueGUI extends JFrame implements Visible {
 		add(panelChoixJoueur, "choixJoueur");
 		((CardLayout) this.getContentPane().getLayout()).show(this.getContentPane(), "choixJoueur"); // méthode pour afficher une autre "carte" 
 		
-
 		done.addActionListener( e-> {
 			System.out.println(nomJoueur.getText());
 			this.playerName = nomJoueur.getText();
 			this.next = true;
 		});
-
-		//Solution approximative : on assigne this.joueur directement ici
-		//(car c'est le seul endroit où on peut accéder au String du JTextField)
-		//pour ce faire, la classe possède un argument String playerName auquel on peut acceder dans l'expression lambda
-		
+		//l'environnement pourra alors accéder à this.playerName pour initialiser le jouer. 
 		return this.playerName;
 		}
 		
@@ -466,6 +468,8 @@ public class VueGUI extends JFrame implements Visible {
 	public void displayLevels() {
 		this.next = false;		
 		
+		//on parcour notre liste de niveaux et on les affiche en tant que bouton. 
+		//chacun permettra de passer next à true + de garder la valeur du niveau en mémoire pour l'environnement.
 		File levels = new File("../levels/");
 		ArrayList<String> listLevelNames = new ArrayList<String>();
 		for (File level : levels.listFiles()) {
@@ -489,28 +493,17 @@ public class VueGUI extends JFrame implements Visible {
 			if (!this.joueur.isDebloque(level)) { // si le niveau est bloqué
 				lev.setEnabled(false); //à remettre pour griser les niveaux bloqués
 			}
-			//ici, on crée le plateau correspondant au numéro du niveau que l'on obtient.
-			//le choix envoie directement la prochaine fenetre (afficherPlateau). 
 			lev.addActionListener( e-> {
 				VueGUI.this.numNiveau = Integer.valueOf(lev.getText());
-				this.next = true;
-				//Niveau niveau = new Niveau(numNiveau);
-				//this.plateau = new Plateau(niveau, this);
-				//setPlateau(this.plateau);
-				//this.afficherPlateau();
-			});
-			}
+				this.next = true;});
+		}
 		
 		add(panelChoixNiveau, "choixNiveau");
 		((CardLayout) this.getContentPane().getLayout()).show(this.getContentPane(), "choixNiveau");
-		
-		
-		
 		}
 
 	@Override
 	public String getPlayerName() {
-		// TODO Auto-generated method stub
 		return this.playerName;
 	}
 

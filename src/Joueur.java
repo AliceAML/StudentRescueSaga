@@ -2,14 +2,14 @@ import java.io.Serializable;
 
 /**
  * Classe qui permet de sauvegarder les parties
- * (nom du joueur, scores, progresion)
+ * (nom du joueur, scores, progression)
  *
  */
 public class Joueur implements Serializable {
 
 	private static final long serialVersionUID = 7403199348226761799L;
 	
-	private int[] topScores = new int[10]; // initialisé arbritrairement à 10, parce qu'on va probablement pas faire plus de 10 niveaux 
+	private int[] topScores = new int[10]; // initialisé arbritrairement à 10, parce qu'on ne va probablement pas faire plus de 10 niveaux 
 	private boolean[] niveauxDebloques = new boolean[10];
 	private String nom;
 		

@@ -120,7 +120,7 @@ public class Environnement {
 		nomJoueur = vue.getPlayerName();
 		
 		// si le joueur n'existe pas encore, on le crée.
-		if (!this.loadJoueur(nomJoueur)) { // si on ne peut pas charger le joueur (sinon ça le charge)
+		if (!this.loadJoueur(nomJoueur)) { // si on ne peut pas charger le joueur (sinon ça le charge directement)
 				this.joueur = new Joueur(nomJoueur); // on en crée un nouveau
 		}
 		// on définit l'attribut joueur de la vue pour pouvoir l'utiliser par la suite.
@@ -135,6 +135,7 @@ public class Environnement {
 	}
 	
 	public void game() {
+		//on peut enfin lancer le plateau de jeu et faire les vérifications pour Win, gameover, etc.
 		this.startniveau();
 		
 		if (this.plateau.isWin()) {

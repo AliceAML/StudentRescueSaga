@@ -16,10 +16,7 @@ public class VueText implements Visible {
 	public VueText() {
 		this.plateau = null; // la vue n'a pas de plateau à l'initialisation, elle s'ouvre sur l'environnement
 	}
-//	
-//	public VueText(Plateau plateau) {
-//get		this.plateau = plateau;
-//	}
+
 	@Override
 	public void setPlateau(Plateau plateau) {
 		this.plateau = plateau;
@@ -76,17 +73,21 @@ public class VueText implements Visible {
 
 	@Override
 	public void move() {
-		//TODO il faudrait qu'on puisse écrire fusee, marteau et
-		// même les coordonnées de plusieurs façon différentes pour éviter les misspell errors
-
-		//on vient chercher la String de cordonnées lue dans le scanner
+		
 		System.out.println("Coordonnées à détruire (A1, C7...) : ");
 		String reponse = scanReponse.next().toUpperCase();
-		// normalisation de reponse pour supprimer les accents
-		//on stockera les deux indexs correspondants dans un int[]
-		//on regarde d'abord si l'utilisateur veut utiliser des coups spéciaux ou des commandes
+		/*
+		* Normalisation de reponse pour supprimer les accents et les miniscules
+		* on stockera les deux indexs correspondants dans un int[]
+		* on regarde d'abord si l'utilisateur veut utiliser des coups spéciaux ou des commandes
 		
-		
+		* fonction subdividée en 5 parties différentes :
+		- Help
+		- Exit
+		- Coup spécial fusée puis choix de la colonne à détruire 
+		- Coup spécial marteau puis choix de la case
+		- Coup normal avec choix de la case. 
+		*/
 		if (reponse.equals("HELP")) {
 			this.help();
 			this.afficherPlateau();
@@ -134,7 +135,6 @@ public class VueText implements Visible {
 				//FIXME destroy est appelé sur les coordonnées sans raison apparente du coup le programme affiche l'erreur case isolée
 			}
 		}
-		//if(reponse.length() == 2) {
 		else {
 			try {
 				int[] coord = new int[2];
@@ -291,7 +291,7 @@ public class VueText implements Visible {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Choisir un niveau ou continuer ? (new/next) ");
 		String ans = sc.next();
-		if (ans.equals("next")) { // si next > on lance le prochain niveauo
+		if (ans.equals("next")) { // si next > on lance le prochain niveau
 			return false;
 		}
 		
@@ -306,7 +306,7 @@ public class VueText implements Visible {
 	}
 	
 	/**
-	 * Retourne le nom du joueur pour que l'env load la sauvegarde
+	 * Retourne le nom du joueur pour que l'environnement load la sauvegarde
 	 */
 	@Override
 	public String choixJoueur() {

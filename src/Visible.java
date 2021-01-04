@@ -73,18 +73,33 @@ public interface Visible {
 	public boolean startAgain(); 
 	
 	/**
-	 * demande si on veut choisir un niveau ou faire le prochainj
+	 * demande si on veut choisir un niveau ou faire le prochain
 	 * @return
 	 */
 	public boolean choiceOrNext();
-
+	
+	/**
+	 * renvoie le string saisi par l'utilisateur
+	 * @return String
+	 */
 	public String choixJoueur();
-
+	
+	/**
+	 * assigne le joueur entré en argument au joueur en attribut.
+	 * @return
+	 */
 	void setJoueur(Joueur joueur); 
 	
-	
+	/**
+	 * affiche les différents niveaux disponibles.
+	 * @return
+	 */
 	void displayLevels();
 	
+	/**
+	 * renvoie le nom du joueur passé en attribut.
+	 * @return
+	 */
 	String getPlayerName();
 	
 
