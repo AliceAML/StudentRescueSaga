@@ -128,24 +128,43 @@ public class Environnement {
 		
 		//on lance displaylevels pour les deux vues. 
 		this.choixNiveau();
-		
-		
-		
-		
 	}
 	
 	public void game() {
-		//on peut enfin lancer le plateau de jeu et faire les vérifications pour Win, gameover, etc.
+		boolean exit = false;
 		this.startniveau();
-		
-		if (this.plateau.isWin()) {
-			this.joueur.update(this.niveau.getNumero(), this.plateau.getScore());
-			try {
-				this.save();
-			} catch (IOException e) {
-				System.out.println("impossible de sauvegarder");
+		while (!exit) {
+			if (this.plateau.exit) {
+				this.plateau.exit = false;
+				this.niveau = this.choixNiveau();
+				this.startniveau();
+			}
+			if (this.plateau.isGameOver()) {
+				// si game over, on demande start again
+				exit = this.startAgain();
+				if (exit == false) {break;} //TODO pour l'instant on sort juste de la boucle. - esk ça sort vraiment de la boucle ?
+			}
+			if (this.plateau.isWin()) {
+				this.joueur.update(this.niveau.getNumero(), this.plateau.getScore());
+				try {
+					this.save();
+				} catch (IOException e) {
+					System.out.println("Impossible de sauvegarder");
+				}
+				// si win, on demande choice or next
+				// choice or next = true > choix niveau
+				if (this.choiceOrNext()) {
+					this.niveau = this.choixNiveau();
+					this.startniveau();
+				}
+				// choice or next = false > next niveau
+				else {
+					System.out.println("lance niveau suivant");
+					this.niveau = new Niveau(this.niveau.getNumero() + 1);
+					System.out.println(this.niveau.getNumero());
+					this.startniveau();
+				}
 			}
 		}
 	}
-	
 }

@@ -4,7 +4,9 @@ import java.util.Scanner;
 public class Main {
 
 	public static void main(String[] args) throws IOException {
-		
+		//création d'un environnement selon la vue désirée
+		//* on peu soit lancer le main sans argument et choisir 1 ou 2 dans le terminal
+		//* ou alors, le main contient lui-même un argument 1 ou 2.
 		Environnement env = new Environnement(null);
 		int choix;
 		
@@ -24,47 +26,9 @@ public class Main {
 			VueText vue = new VueText();
 			env = new Environnement(vue);
 		}
+		//on lance ensuite l'initialisation puis le jeu lui même
+		//(game() étant capable de revenir directement à l'étape du choix des niveaux)
 		env.init();
-		
-		boolean exit = false;
-
-		env.startniveau();
-		
-		// tant que exit est false, on continue.
-		while (!exit) {
-			if (env.plateau.exit) {
-				env.plateau.exit = false;
-				env.niveau = env.choixNiveau();
-				env.startniveau();
-			}
-			if (env.plateau.isGameOver()) {
-				// si game over, on demande start again
-				exit = env.startAgain();
-				if (exit == false) {break;} //TODO pour l'instant on sort juste de la boucle. - esk ça sort vraiment de la boucle ?
-			}
-			if (env.plateau.isWin()) {
-				env.joueur.update(env.niveau.getNumero(), env.plateau.getScore());
-				try {
-					env.save();
-				} catch (IOException e) {
-					System.out.println("Impossible de sauvegarder");
-				}
-				// si win, on demande choice or next
-				// choice or next = true > choix niveau
-				if (env.choiceOrNext()) {
-					env.niveau = env.choixNiveau();
-					env.startniveau();
-				}
-				// choice or next = false > next niveau
-				else {
-					System.out.println("lance niveau suivant");
-					env.niveau = new Niveau(env.niveau.getNumero() + 1);
-					System.out.println(env.niveau.getNumero());
-					env.startniveau();
-				}
-			}
-		}
-		
+		env.game();
 	}
-	
 }
