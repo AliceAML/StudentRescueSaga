@@ -1,6 +1,11 @@
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * 
+ * Classe de lancement du jeu.
+ *
+ */
 public class Main {
 
 	public static void main(String[] args) throws IOException {

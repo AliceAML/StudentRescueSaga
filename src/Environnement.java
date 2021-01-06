@@ -1,5 +1,9 @@
 import java.io.*;
 
+/**
+ * Classe qui gère le déroulement du jeu
+ *
+ */
 public class Environnement {
 	Visible vue;
 	Niveau niveau;
@@ -13,89 +17,13 @@ public class Environnement {
 	 */
 	public Environnement(Visible vue) throws IOException {
 		this.vue = vue; // choix de la vue lors de la création de l'environnement
-	}
-
-	
-	/**
-	 * Choix du niveau, reçois int renvoyé par la vue
-	 * @return
-	 */
-	public Niveau choixNiveau() {
-		int n = this.vue.choixNiveau();
-		Niveau niveau = new Niveau(n);
-		this.niveau = niveau;
-		return niveau;
+		// les autres attributs sont initialisés par d'autres fonctions
 	}
 	
 	/**
-	 * Méthode qui lance le niveau choix (entré en paramètre)
-	 * @throws IOException 
+	 * Init permet de mettre en place les différents attributs : joueur, niveau, plateau.
+	 * et de lancer le début d'une partie (welcome, choixJoueur, etc.)
 	 */
-	public void startniveau() {
-		Plateau plateau = new Plateau(niveau, vue);
-		this.vue.setPlateau(plateau); // il faut modifier le plateau à chaque fois qu'on (re)commence un niveau
-		this.plateau = plateau;
-		this.plateau.jouer();
-	}	
-	
-	/**
-	 * Méthode qui demande si le joueur veut rejouer
-	 * @param niveau
-	 * @return booléan
-	 */
-	public boolean startAgain() {
-		if (this.plateau.isGameOver() && this.vue.startAgain()) {
-			this.startniveau();
-			return true;
-		}
-		return false;
-	}
-	
-	/**
-	 * Si le niveau est gagné, on propose à l'utilisateur d'avancer au niveau suivant
-	 * Où de choisir un autre niveau
-	 * @return
-	 */
-	public boolean choiceOrNext() {
-		//si true, l'utilisateur à choisit "choix"
-		if (this.vue.choiceOrNext()) {
-			return true;
-		}
-		//si false, l'utilisateur à choisit "next"
-		return false;
-	}
-	
-	public void save() throws IOException {
-		FileOutputStream fileOut = new FileOutputStream("../sauvegardes/" + this.joueur.getNom().toLowerCase() + ".ser");
-	    ObjectOutputStream out = new ObjectOutputStream(fileOut);
-	    out.writeObject(this.joueur);
-	    out.close();
-	}
-	
-	private boolean loadJoueur(String name) {
-		try {
-			FileInputStream fileIn = new FileInputStream("../sauvegardes/" + name.toLowerCase() + ".ser");
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-
-		    this.joueur = (Joueur) in.readObject();
-		    in.close();
-		    fileIn.close();
-		    return true;
-		}
-		catch (IOException e) {
-			return false; // false si le fichier n'existe pas
-		}
-		catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			return false;
-		}
-	    
-	}
-	
-	public Joueur getJoueur() {
-		return this.joueur;
-	}
-	
 	public void init() {
 		
 		//lance welcome pour les deux vues
@@ -129,6 +57,100 @@ public class Environnement {
 		//on lance displaylevels pour les deux vues. 
 		this.choixNiveau();
 	}
+
+	
+	/**
+	 * Choix du niveau, reçoit int renvoyé par la vue
+	 * @return niveau actuel de type Niveau
+	 */
+	public Niveau choixNiveau() {
+		int n = this.vue.choixNiveau(); // demande à la vue le choix de l'utilisateur
+		Niveau niveau = new Niveau(n); // crée un Niveau à partir de cet entier
+		this.niveau = niveau; // assigne niveau en attribut de l'environnement
+		return niveau;
+	}
+	
+	/**
+	 * lance le niveau choisi
+	 */
+	public void startniveau() {
+		Plateau plateau = new Plateau(niveau, vue); // nouveau plateau pour le nouveau niveau
+		this.vue.setPlateau(plateau); // il faut modifier le plateau à chaque fois qu'on (re)commence un niveau
+		this.plateau = plateau;
+		this.plateau.jouer(); 
+	}	
+	
+	/**
+	 * Méthode qui demande si le joueur veut rejouer
+	 * @param niveau
+	 * @return booléan
+	 */
+	public boolean startAgain() {
+		if (this.plateau.isGameOver() && this.vue.startAgain()) { // si on est gameOver et que le joueur a choisi de rejouer 
+			this.startniveau(); // on relance le niveau
+			return true; // et on renvoie true
+		}
+		return false; // sinon false
+	}
+	
+	/**
+	 * Si le niveau est gagné, on propose à l'utilisateur d'avancer au niveau suivant
+	 * Où de choisir un autre niveau
+	 * @return
+	 */
+	public boolean choiceOrNext() {
+		//si true, l'utilisateur à choisit "choix"
+		if (this.vue.choiceOrNext()) {
+			return true;
+		}
+		//si false, l'utilisateur à choisit "next"
+		return false;
+	}
+	
+	/**
+	 * Méthode qui sauvegarde la partie en cours (= l'objet Joueur)
+	 * @throws IOException
+	 */
+	public void save() throws IOException {
+		FileOutputStream fileOut = new FileOutputStream("../sauvegardes/" + this.joueur.getNom().toLowerCase() + ".ser");
+	    ObjectOutputStream out = new ObjectOutputStream(fileOut);
+	    out.writeObject(this.joueur);
+	    out.close();
+	}
+	
+	/**
+	 * Charge la sauvegarde d'un joueur
+	 * @param name
+	 * @return booléen true si le chargement a fonctionné
+	 */
+	private boolean loadJoueur(String name) {
+		try {
+			FileInputStream fileIn = new FileInputStream("../sauvegardes/" + name.toLowerCase() + ".ser");
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+
+		    this.joueur = (Joueur) in.readObject();
+		    in.close();
+		    fileIn.close();
+		    return true;
+		}
+		catch (IOException e) {
+			return false; // false si le fichier n'existe pas
+		}
+		catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		}
+	    
+	}
+	
+	/**
+	 * Getter de l'attribut jouer
+	 * @return Joueur this.joueur
+	 */
+	public Joueur getJoueur() {
+		return this.joueur;
+	}
+	
 	
 	public void game() {
 		boolean exit = false;

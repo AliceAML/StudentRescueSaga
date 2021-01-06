@@ -4,4 +4,6 @@
  * 
  */
 public class Element {
+	// la classe n'est pas définie, mais elle n'est pas abstraite non plus
+	// car notre plateau contient un tableau d'élements
 }

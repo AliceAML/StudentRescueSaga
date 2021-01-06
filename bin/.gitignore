@@ -1,1 +1,7 @@
 /VueText.java
+/Joueur.class
+/Plateau.class
+/Visible.class
+
+# ignore tous les fichiers class
+*.class
