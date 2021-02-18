@@ -1,4 +1,4 @@
-# projetJava 
+# Student Rescue Saga
 projet Java M1
 Groupe 23
 Jules Cauzinille & Alice Hammel
@@ -11,6 +11,7 @@ Our work focused on developing the game logic, saving and retrieving games and i
 We named it "Student Rescue Saga" as it was developed during Covid-19 lockdown and students definitely needed to be saved!
 
 <img src="https://raw.githubusercontent.com/AliceAML/StudentRescueSaga/master/welcome.png" width="50%">
+
 ## How to start playing
 
 Le jeu se lance en exécutant le fichier Main.java contenu dans le dossier "src" avec 1 en argument pour la vue textuelle, ou 2 pour la vue graphique.
