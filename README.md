@@ -10,7 +10,8 @@ Our work focused on developing the game logic, saving and retrieving games and i
 
 We named it "Student Rescue Saga" as it was developed during Covid-19 lockdown and students definitely needed to be saved!
 
-<img src="https://raw.githubusercontent.com/AliceAML/StudentRescueSaga/master/welcome.png" width="50%">
+<img src="https://raw.githubusercontent.com/AliceAML/StudentRescueSaga/master/welcome.png" width="40%">
+<img src="https://raw.githubusercontent.com/AliceAML/StudentRescueSaga/master/studentrescuesaga.png" width="40%">
 
 ## How to start playing
 
